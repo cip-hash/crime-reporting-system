@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { login } from "../services/authService"; // Ensure this API returns role
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,13 +16,19 @@ const Login = () => {
 
     try {
       const response = await login({ email, password });
-      console.log("Login successful:", response.data);
-      
-      // Example: Save token in localStorage or sessionStorage
-      sessionStorage.setItem("authToken", response.data.token);
+      const { token, role } = response.data;
 
-      // Redirect to dashboard/homepage after login
-      navigate("/dashboard");
+      sessionStorage.setItem("authToken", token);
+      sessionStorage.setItem("userRole", role);
+
+      // Redirect based on user role
+      if (role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (role === "police") {
+        navigate("/police-dashboard");
+      } else {
+        navigate("/user-dashboard");
+      }
     } catch (error) {
       setErrors(error.response?.data?.message || "Invalid credentials");
     } finally {

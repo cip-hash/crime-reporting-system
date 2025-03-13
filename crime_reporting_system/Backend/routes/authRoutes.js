@@ -1,76 +1,81 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const db = require("../config/db");  // MySQL connection file
-require("dotenv").config();
+const db = require("../config/db");
+const { authenticateUser, authorizeRole } = require("../middleware/authMiddleware");
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key"; // Use env for security
 
-// ✅ User Registration
+// ✅ Register User (Default Role: User)
 router.post("/register", async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
+    // Ensure only 'user' can register (Police/Admin must be added manually)
+    const userRole = role === "admin" || role === "police" ? "user" : role;
+
     try {
-        // Check if user already exists
-        const [existingUser] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
-        if (existingUser.length > 0) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
+        const query = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+        db.query(query, [name, email, hashedPassword, userRole], (err, result) => {
+            if (err) return res.status(500).json({ message: "Error: User may already exist" });
 
-        // Insert user into database
-        await db.promise().query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", 
-            [name, email, hashedPassword]);
-
-        res.status(201).json({ message: "User registered successfully" });
-
+            res.status(201).json({ message: "User registered successfully" });
+        });
     } catch (error) {
-        console.error("Registration Error:", error.message);
-        res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error" });
     }
 });
 
-// ✅ User Login
-router.post("/login", async (req, res) => {
+// ✅ Login User
+router.post("/login", (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    try {
-        // Check if user exists
-        const [user] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
-        
-        if (user.length === 0) {
-            return res.status(400).json({ message: "Invalid email or password" });
+    const query = "SELECT * FROM users WHERE email = ?";
+    db.query(query, [email], async (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        // Compare password
-        const validPassword = await bcrypt.compare(password, user[0].password);
-        if (!validPassword) {
-            return res.status(400).json({ message: "Invalid email or password" });
+        const user = results[0];
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        // Generate JWT Token
-        const token = jwt.sign(
-            { id: user[0].id, email: user[0].email },
-            process.env.JWT_SECRET || "your_secret_key",
-            { expiresIn: "1h" }
-        );
+        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: "1h" });
 
-        res.status(200).json({ message: "Login successful", token });
+        res.json({ token, role: user.role });
+    });
+});
 
-    } catch (error) {
-        console.error("Login Error:", error.message);
-        res.status(500).json({ message: "Server error", error: error.message });
+// ✅ Admin Adds a Police Officer
+router.post("/add-police", authenticateUser, authorizeRole(["admin"]), (req, res) => {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
     }
+
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) return res.status(500).json({ message: "Error hashing password" });
+
+        const query = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'police')";
+        db.query(query, [name, email, hashedPassword], (err, result) => {
+            if (err) return res.status(500).json({ message: "Error adding police officer" });
+
+            res.status(201).json({ message: "Police officer added successfully" });
+        });
+    });
 });
 
 module.exports = router;
