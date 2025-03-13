@@ -1,0 +1,104 @@
+// Main Container for the dashboard
+.police-dashboard-container {
+    max-width: 80rem;
+    margin: 2.5rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Title
+  .heading {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+  
+  // Complaints List Container
+  .complaint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  
+  // Individual complaint card
+  .complaint-card {
+    padding: 1rem;
+    border: 2px solid transparent;
+    border-radius: 0.75rem;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+  
+    &:hover {
+      background: #f0f0f0;
+      border-color: #007bff;
+    }
+  
+    &.active {
+      background: #e6f0ff;
+      border-color: #007bff;
+    }
+  
+    h4 {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  // Complaint detail section (expanded card)
+  .complaint-details {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.75rem;
+    border: 1px solid #ddd;
+  
+    p {
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+  
+    .evidence-files {
+      margin-top: 1rem;
+  
+      a {
+        color: #007bff;
+        text-decoration: underline;
+  
+        &:hover {
+          color: #0056b3;
+        }
+      }
+    }
+  
+    .status-section {
+      margin-top: 1.5rem;
+  
+      select {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+      }
+  
+      button {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background 0.3s;
+  
+        &:hover {
+          background: #0056b3;
+        }
+      }
+    }
+  }
+  
