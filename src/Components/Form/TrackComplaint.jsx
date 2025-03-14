@@ -13,7 +13,7 @@ const TrackComplaint = () => {
     }
 
     try {
-      const res = await axios.get(`http://localhost:4000/api/complaints/${complaintId}`);
+      const res = await axios.post(`http://localhost:4000/track_complaint/${complaintId}`);
       setComplaintData(res.data);
       setError("");
     } catch (err) {

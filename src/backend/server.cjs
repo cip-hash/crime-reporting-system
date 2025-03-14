@@ -162,7 +162,7 @@ app.get("/get_complaints", async (req, res) => {
   });
   
 //TRACKCOMPLAINT
-  app.get('/api/complaints/:complaintId', async (req, res) => {
+  app.post('/track_complaint/:complaintId', async (req, res) => {
     const { complaintId } = req.params;
   
     try {
