@@ -182,7 +182,19 @@ app.get("/get_complaints", async (req, res) => {
     }
   });
   
-
+  app.post('/heatmap', async (req, res) => {
+    try {
+      const result = await pool.query(`
+        SELECT district, subdivision, totalcrimes, latitude, longitude
+        FROM crime_stats
+        WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+      `);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching crime stats:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
   
   // Server listener
   app.listen(4000, () => {

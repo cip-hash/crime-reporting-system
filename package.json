@@ -17,6 +17,8 @@
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
     "js-cookie": "^3.0.5",
+    "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.9",
     "pg": "^8.14.0",
@@ -24,6 +26,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.3.0",
     "sass-embedded": "^1.85.1"
   },
