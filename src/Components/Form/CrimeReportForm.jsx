@@ -26,7 +26,7 @@ const CrimeReportForm = () => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/get_districts");
+        const response = await fetch("http://localhost:4000/get_districts",{method:'POST'});
         const data = await response.json();
         setDistricts(data.districts);
       } catch (error) {
@@ -41,7 +41,7 @@ const CrimeReportForm = () => {
     if (formData.district) {
       const fetchSubdivisions = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/get_subdivisions?district=${encodeURIComponent(formData.district)}`);
+          const response = await fetch(`http://localhost:4000/get_subdivisions?district=${encodeURIComponent(formData.district)}`,{method:'POST'});
           const data = await response.json();
           setSubdivisions(data.subdivisions);
         } catch (error) {
@@ -77,7 +77,7 @@ const CrimeReportForm = () => {
   
     try {
       // Step 1: Get new complaint ID from backend
-      const complaintIdResponse = await fetch("http://localhost:4000/generate_complaint_id");
+      const complaintIdResponse = await fetch("http://localhost:4000/generate_complaint_id",{method:'POST'});
       const complaintIdData = await complaintIdResponse.json();
       const complaintIdGenerated = complaintIdData.complaintId;
       setComplaintId(complaintIdGenerated);

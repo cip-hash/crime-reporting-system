@@ -12,7 +12,7 @@ const PoliceViewComplaint = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/get_complaints");
+        const res = await axios.post("http://localhost:4000/get_complaints");
         setComplaints(res.data);
       } catch (error) {
         console.error("Error fetching complaints:", error);
@@ -25,18 +25,25 @@ const PoliceViewComplaint = () => {
   }, []);
 
   // Handle status update
-  const handleStatusUpdate = async (complaintId) => {
-    if (!status[complaintId]) {
+  const handleStatusUpdate = async (complaintId, currentStatus) => {
+    let selectedStatus = status[complaintId];
+
+    if (!selectedStatus) {
       alert("Please select a status to update.");
       return;
     }
 
+    // Auto convert "Accepted" to "Under Investigation"
+    if (selectedStatus === "Accepted") {
+      selectedStatus = "Under Investigation";
+    }
+
     try {
-      await axios.put(`http://localhost:4000/update_complaint_status/${complaintId}`, { status: status[complaintId] });
+      await axios.put(`http://localhost:4000/update_complaint_status/${complaintId}`, { status: selectedStatus });
       alert("Status updated successfully!");
 
       // Refresh complaints list
-      const res = await axios.get("http://localhost:4000/get_complaints");
+      const res = await axios.post("http://localhost:4000/get_complaints");
       setComplaints(res.data);
 
       // Clear the status for this complaint after update
@@ -46,6 +53,24 @@ const PoliceViewComplaint = () => {
       console.error("Error updating status:", error);
       alert("Failed to update status.");
     }
+  };
+
+  // Function to get allowed next statuses
+  const getNextStatusOptions = (currentStatus) => {
+    switch (currentStatus) {
+      case "Pending":
+        return ["Accepted", "Rejected"]; // Only these two options at this stage
+      case "Under Investigation":
+        return ["Closed"]; // Only allowed to close
+      default:
+        return []; // Rejected and Closed are final
+    }
+  };
+
+  // Function to show current status (replace Accepted with Under Investigation)
+  const getDisplayStatus = (status) => {
+    if (status === "Accepted") return "Under Investigation"; // Accepted is never shown, treated as Under Investigation
+    return status;
   };
 
   return (
@@ -65,7 +90,7 @@ const PoliceViewComplaint = () => {
                 selectedComplaintId === c.complaint_id ? styles.active : ""
               }`}
             >
-              {/* Only this part will toggle the detailed view */}
+              {/* Summary view */}
               <div
                 onClick={() =>
                   setSelectedComplaintId(selectedComplaintId === c.complaint_id ? null : c.complaint_id)
@@ -107,25 +132,30 @@ const PoliceViewComplaint = () => {
                     </div>
                   )}
 
-                  {/* Status update */}
-                  <div
-                    className={styles["status-section"]}
-                    onClick={(e) => e.stopPropagation()} // prevent collapse when interacting
-                  >
-                    <p><b>Current Status:</b> {c.status}</p>
-                    <label>Update Status:</label>
-                    <select
-                      value={status[c.complaint_id] || ""}
-                      onChange={(e) =>
-                        setStatus((prev) => ({ ...prev, [c.complaint_id]: e.target.value }))
-                      }
-                    >
-                      <option value="">Select Status</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Under Investigation">Under Investigation</option>
-                      <option value="Closed">Closed</option>
-                    </select>
-                    <button onClick={() => handleStatusUpdate(c.complaint_id)}>Update Status</button>
+                  {/* Status Section */}
+                  <div className={styles["status-section"]} onClick={(e) => e.stopPropagation()} >// prevent collapsing
+                    <p><b>Current Status:</b> {getDisplayStatus(c.status)}</p>
+
+                    {/* Only show status update if allowed */}
+                   {getNextStatusOptions(getDisplayStatus(c.status)).length > 0 ? (
+                      <>
+                        <label>Update Status:</label>
+                        <select
+                          value={status[c.complaint_id] || ""}
+                          onChange={(e) =>
+                            setStatus((prev) => ({ ...prev, [c.complaint_id]: e.target.value }))
+                          }
+                        >
+                          <option value="">Select Status</option>
+                          {getNextStatusOptions(getDisplayStatus(c.status)).map((option, idx) => (
+                            <option key={idx} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                        <button onClick={() => handleStatusUpdate(c.complaint_id, c.status)}>Update Status</button>
+                      </>
+                    ) : (<></>)}
                   </div>
                 </div>
               )}

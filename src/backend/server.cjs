@@ -20,13 +20,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/get_districts', async (req, res) => {
+app.post('/get_districts', async (req, res) => {
   const result = await pool.query('SELECT DISTINCT "district" FROM crime_stats ORDER BY district');
   res.json({ districts: result.rows.map(row => row.district) }); // send only district names as strings
   console.log(result.rows);
 });
 
-app.get('/get_subdivisions', async (req, res) => {
+app.post('/get_subdivisions', async (req, res) => {
   const district = req.query; // { district: 'MADURAI' }
   console.log(district);
 
@@ -35,7 +35,7 @@ console.log(rows);
   res.json({ subdivisions: rows.map(row => row.subdivision) }); // Map to array of subdivisions
 });
 
-app.get('/generate_complaint_id', async (req, res) => {
+app.post('/generate_complaint_id', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT complaint_id FROM complaints ORDER BY complaint_id DESC LIMIT 1');
 
@@ -134,7 +134,7 @@ app.post("/upload_complaint", upload.array('evidenceFiles', 5), async (req, res)
 // -----------------------------------
 //POLICEVIEWCOMPLAINTS
 // Get all complaints
-app.get("/get_complaints", async (req, res) => {
+app.post("/get_complaints", async (req, res) => {
     try {
       const result = await pool.query("SELECT * FROM complaints ORDER BY date DESC, time DESC");
       res.json(result.rows);
