@@ -35,7 +35,7 @@ const Heatmap = () => {
   }, []);
 
   return (
-    <MapContainer center={[11.1271, 78.6569]} zoom={7.2} style={{ height: '100vh', width: '100%' }}>
+    <MapContainer center={[11.1271, 78.6569]} zoom={7} style={{ height: '100vh', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
