@@ -56,7 +56,8 @@ const TrackComplaint = () => {
           {complaintData.title && <p><b>Title:</b> {complaintData.title}</p>}
           <p><b>Date:</b> {new Date(complaintData.date).toLocaleDateString()}</p>
           <p><b>Time:</b> {complaintData.time}</p>
-          <p><b>Location:</b> {complaintData.location}</p>
+          <p><b>District:</b> {complaintData.district}</p>
+          <p><b>Subdivision:</b> {complaintData.subdivision}</p>
           <p><b>Description:</b> {complaintData.description}</p>
           {complaintData.suspect_details && <p><b>Suspect Details:</b> {complaintData.suspect_details}</p>}
           {complaintData.victim_details && <p><b>Victim Details:</b> {complaintData.victim_details}</p>}

@@ -1,3 +1,4 @@
+
 const {Pool} = require("pg");
 
 const pool= new Pool({
@@ -10,13 +11,47 @@ const pool= new Pool({
 module.exports=pool;
 const express = require("express");
 const cors = require("cors");
-//const pool = require("./database");
+const fs = require('fs');
+const csvParser = require('csv-parser');
 const multer = require("multer");
 const path = require("path");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.get('/get_districts', async (req, res) => {
+  const result = await pool.query('SELECT DISTINCT "district" FROM crime_stats ORDER BY district');
+  res.json({ districts: result.rows.map(row => row.district) }); // send only district names as strings
+  console.log(result.rows);
+});
+
+app.get('/get_subdivisions', async (req, res) => {
+  const district = req.query; // { district: 'MADURAI' }
+  console.log(district);
+
+  const { rows } = await pool.query('SELECT "subdivision" FROM crime_stats WHERE "district" = $1', [district.district]);
+console.log(rows);
+  res.json({ subdivisions: rows.map(row => row.subdivision) }); // Map to array of subdivisions
+});
+
+app.get('/generate_complaint_id', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT complaint_id FROM complaints ORDER BY complaint_id DESC LIMIT 1');
+
+    let newIdNumber = 1; // default for first entry
+    if (rows.length > 0) {
+      const lastId = rows[0].complaint_id; // Example: CMP0000000123
+      const lastNumber = parseInt(lastId.substring(3), 10); // Extract number part
+      newIdNumber = lastNumber + 1;
+    }
+    const newComplaintId = 'CMP' + String(newIdNumber).padStart(10, '0'); // CMP0000000124
+    res.json({ complaintId: newComplaintId });
+  } catch (error) {
+    console.error('Error generating complaint ID:', error);
+    res.status(500).json({ error: 'Failed to generate complaint ID' });
+  }
+});
 
 // Serve static files from "uploads" folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -58,7 +93,8 @@ app.post("/upload_complaint", upload.array('evidenceFiles', 5), async (req, res)
       incidentType,
       date,
       time,
-      location,
+      district,
+      subdivision,
       title,
       description,
       suspectDetails,
@@ -71,14 +107,15 @@ app.post("/upload_complaint", upload.array('evidenceFiles', 5), async (req, res)
     // Insert complaint into table
     const newComplaint = await pool.query(
       `INSERT INTO complaints 
-      (complaint_id, incident_type, date, time, location, title, description, suspect_details, victim_details, witness_details, evidence_files) 
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+      (complaint_id, incident_type, date, time, district,subdivision, title, description, suspect_details, victim_details, witness_details, evidence_files) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
       [
         complaintId,
         incidentType,
         date,
         time,
-        location,
+        district,
+        subdivision,
         title,
         description,
         suspectDetails,

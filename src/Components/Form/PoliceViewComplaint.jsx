@@ -80,7 +80,8 @@ const PoliceViewComplaint = () => {
                   {c.title && <p><b>Title:</b> {c.title}</p>}
                   <p><b>Date:</b> {new Date(c.date).toLocaleDateString()}</p>
                   <p><b>Time:</b> {c.time}</p>
-                  <p><b>Location:</b> {c.location}</p>
+                  <p><b>District:</b> {c.district}</p>
+                  <p><b>Subdivision:</b> {c.subdivision}</p>
                   <p><b>Description:</b> {c.description}</p>
                   {c.suspect_details && <p><b>Suspect:</b> {c.suspect_details}</p>}
                   {c.victim_details && <p><b>Victim:</b> {c.victim_details}</p>}

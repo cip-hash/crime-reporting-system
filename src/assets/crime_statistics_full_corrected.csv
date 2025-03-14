@@ -1,0 +1,271 @@
+District,Subdivision,Murder,Murder for Gain,Dacoity,Robbery,Grave Burglary,Grave Theft,Total Crimes
+ARIYALUR,Ariyalur,5,1,0,4,4,1,15
+ARIYALUR,Jayankondam,11,2,0,6,1,0,20
+AVADI,Ambattur,9,1,0,8,4,3,25
+AVADI,Avadi,5,0,0,5,3,1,14
+AVADI,Ennore,7,0,1,6,0,1,15
+AVADI,Manali,7,0,0,3,1,5,16
+AVADI,Pattabiram,2,0,0,0,0,0,2
+AVADI,Poonamallee,7,1,0,13,6,1,28
+AVADI,Redhills,16,0,3,8,5,3,35
+AVADI,SRMC,7,1,0,3,3,3,17
+CHENGALPET,Chengalpet,14,1,1,18,3,0,37
+CHENGALPET,Mamalapuram,7,0,2,16,1,2,28
+CHENGALPET,Mathuranthagam,9,1,2,10,2,3,27
+CHENNAI,Adyar,1,0,0,6,0,0,7
+CHENNAI,Anna Nagar,3,0,1,6,1,1,12
+CHENNAI,Arumbakkam,2,0,1,6,1,0,10
+CHENNAI,Ashok Nagar,2,0,0,5,2,0,9
+CHENNAI,Ayanavaram,3,0,0,15,1,1,20
+CHENNAI,Egmore,4,0,1,10,6,1,22
+CHENNAI,Flower Bazzar,3,0,0,9,1,2,15
+CHENNAI,Guindy,5,0,0,7,3,1,16
+CHENNAI,Harbour,2,0,1,2,1,1,7
+CHENNAI,High Court,2,0,0,3,2,0,7
+CHENNAI,Kilpauk,0,0,0,4,0,3,7
+CHENNAI,Kolathur,1,0,0,15,2,0,18
+CHENNAI,Kotturpuram,3,0,0,1,0,1,5
+CHENNAI,Koyambedu,4,0,0,21,1,0,26
+CHENNAI,Madipakkam,5,0,0,14,0,0,19
+CHENNAI,Meenambakkam,0,0,0,0,0,1,1
+CHENNAI,MKB Nagar,4,0,0,18,5,1,28
+CHENNAI,Mylapore,3,1,1,9,1,0,15
+CHENNAI,Neelangkarai,2,0,0,7,0,1,10
+CHENNAI,Nungambakkam,1,0,0,10,0,1,12
+CHENNAI,Pulianthope,5,0,1,18,0,0,24
+CHENNAI,Puzhal,5,0,1,23,4,1,34
+CHENNAI,Royapet,2,0,0,9,0,2,13
+CHENNAI,Royapuram,4,1,0,20,0,0,25
+CHENNAI,Saidapet,3,0,0,16,0,0,19
+CHENNAI,Sembium,1,0,0,17,1,0,19
+CHENNAI,St. Thomas Mount,0,0,0,12,0,1,13
+CHENNAI,T.Nagar,1,0,0,4,0,3,8
+CHENNAI,Teynampet,0,0,1,10,0,1,12
+CHENNAI,Tharamani,0,0,0,8,0,1,9
+CHENNAI,Thirumangalam,2,0,0,23,1,3,29
+CHENNAI,Thiruvotriyur,4,0,0,3,1,3,11
+CHENNAI,Triplicane,3,0,2,9,1,2,17
+CHENNAI,Vadapalani,0,0,1,6,0,0,7
+CHENNAI,Valasaravakkam,1,1,0,5,0,0,7
+CHENNAI,Vepery,1,0,0,21,0,1,23
+CHENNAI,Villivakkam,1,0,0,11,0,1,13
+CHENNAI,Virugambakkam,6,0,0,6,0,3,15
+CHENNAI,Washermen Pet,8,1,0,6,0,1,16
+COIMBATORE,Karumathampatty,6,2,4,17,5,2,36
+COIMBATORE,Mettupalayam,9,1,0,10,4,2,26
+COIMBATORE,Periyanaickenpalayam,6,0,0,22,0,1,29
+COIMBATORE,Perur,3,1,0,19,2,2,27
+COIMBATORE,Pollachi,6,1,0,11,4,0,22
+COIMBATORE,Valparai,4,0,0,1,1,1,7
+COIMBATORE CITY,Kattoor,1,0,0,23,0,2,26
+COIMBATORE CITY,Kuniyamuthur,6,0,3,28,1,1,39
+COIMBATORE CITY,Podanur,6,0,1,29,2,1,39
+COIMBATORE CITY,R.S. Puram,4,1,0,12,0,1,18
+COIMBATORE CITY,Saibaba Colony,4,0,0,24,0,2,30
+COIMBATORE CITY,Singanallur,6,0,7,45,4,3,65
+COIMBATORE CITY,Ukkadam,3,0,0,11,0,1,15
+CUDDALORE,Chidambaram,4,0,1,1,2,1,9
+CUDDALORE,Cuddalore,2,1,0,4,0,1,8
+CUDDALORE,Neyveli,9,0,0,3,2,0,14
+CUDDALORE,Panruti,7,2,0,1,2,0,12
+CUDDALORE,Sethiyathope,4,0,0,3,0,0,7
+CUDDALORE,Tittagudi,4,3,0,2,2,0,11
+CUDDALORE,Virudhachalam,7,0,0,3,4,0,14
+DHARMAPURI,Dharmapuri,10,0,0,9,1,0,20
+DHARMAPURI,Harur,8,2,0,7,1,0,18
+DHARMAPURI,Palacode,3,0,0,1,1,1,6
+DHARMAPURI,Pennagaram,10,0,0,2,0,0,12
+DINDIGUL,Dindigul Rural,18,0,0,27,10,0,55
+DINDIGUL,Dindigul Town,7,0,0,5,2,0,14
+DINDIGUL,Kodaikanal,2,0,0,0,0,1,3
+DINDIGUL,Nilakottai,8,0,0,10,2,2,22
+DINDIGUL,Oddanchatram,11,1,0,6,1,0,19
+DINDIGUL,Palani,10,0,0,12,1,0,23
+DINDIGUL,Vedasandur,13,1,1,4,1,0,20
+ERODE,Bhavani,3,1,0,8,0,1,13
+ERODE,Erode Town,8,1,1,26,4,1,41
+ERODE,Gobichettipalayam,3,0,0,4,1,1,9
+ERODE,Perundurai,2,1,0,21,0,0,24
+ERODE,Sathiyamangalam,5,1,1,1,3,1,12
+KALLAKURUCHI,Kallakuruchi,5,1,0,8,2,2,18
+KALLAKURUCHI,Thirukoilur,11,0,0,4,1,0,16
+KALLAKURUCHI,Ulundhurpet,7,0,1,0,1,1,10
+KANCHIPURAM,Kanchipuram,15,0,4,38,1,0,58
+KANCHIPURAM,Sriperumbudur,3,0,0,13,3,4,23
+KANYAKUMARI,Colachel,5,2,0,20,5,2,34
+KANYAKUMARI,Kanyakumari,11,0,0,11,6,0,28
+KANYAKUMARI,Nagercoil,8,1,0,18,9,2,38
+KANYAKUMARI,Thuckalay,9,0,0,27,2,2,40
+KARUR,Karur Rural,3,0,0,4,1,0,8
+KARUR,Karur Town,5,0,1,10,1,2,19
+KARUR,Kulithalai,6,0,0,9,0,0,15
+KRISHNAGIRI,Bargur,5,0,0,3,0,0,8
+KRISHNAGIRI,Denkanikottai,17,0,0,5,0,0,22
+KRISHNAGIRI,Hosur,19,2,1,17,5,0,44
+KRISHNAGIRI,Krishangiri,6,0,0,6,0,0,12
+KRISHNAGIRI,Uthangarai,4,0,0,0,0,1,5
+MADURAI,Melur,16,0,0,15,6,0,37
+MADURAI,Oomachikulam,7,1,2,20,3,1,34
+MADURAI,Peraiyur,5,0,0,9,1,0,15
+MADURAI,Samayanallur,15,3,1,21,3,1,44
+MADURAI,Thirumangalam,10,1,2,26,15,1,55
+MADURAI,Usilampatti,7,0,0,8,2,2,19
+MADURAI CITY,Annanagar,3,0,2,19,1,3,28
+MADURAI CITY,Avaniyapuram,2,0,0,10,0,0,12
+MADURAI CITY,Sellur,7,0,1,20,1,1,30
+MADURAI CITY,South Gate,8,0,0,11,1,1,21
+MADURAI CITY,Temple,0,0,0,10,0,0,10
+MADURAI CITY,Thallakulam,2,1,1,30,1,1,36
+MADURAI CITY,Thideernagar,8,1,0,30,8,1,48
+MADURAI CITY,Thilagarthidal,1,0,8,2,2,13,
+MADURAI CITY,Thiruparankundram,2,0,0,10,0,0,12
+NAGAPATTINAM,Mayiladuthurai,15,0,0,9,1,0,25
+NAGAPATTINAM,Nagapattinam,14,0,0,8,2,2,26
+NAGAPATTINAM,Sirkali,5,0,0,4,1,0,10
+NAGAPATTINAM,Vedaranyam,7,0,0,3,0,0,10
+NAMAKKAL,Namakkal,8,0,0,9,1,1,19
+NAMAKKAL,Rasipuram,7,0,0,2,4,0,13
+NAMAKKAL,Thiruchengode,12,0,5,18,1,4,40
+NAMAKKAL,Velur,2,0,0,0,0,2,4
+NILGIRIS,Coonoor,1,0,0,0,1,0,2
+NILGIRIS,Devala,0,0,0,0,0,0,0
+NILGIRIS,Gudalur,3,0,0,0,2,0,5
+NILGIRIS,Ooty Rural,0,0,0,0,0,2,2
+NILGIRIS,Ooty Town,3,0,1,4,2,0,10
+PERAMBALUR,Mangalamedu,6,0,0,12,3,2,23
+PERAMBALUR,Perambalur,7,1,2,9,8,2,29
+PUDUKOTTAI,Alangudi,9,0,0,9,0,0,18
+PUDUKOTTAI,Aranthangi,1,0,0,5,0,0,6
+PUDUKOTTAI,Illuppur,2,0,0,4,2,0,8
+PUDUKOTTAI,Keeranur,4,0,0,3,0,1,8
+PUDUKOTTAI,Kottaipatitnam,0,2,0,3,0,0,5
+PUDUKOTTAI,Ponnamaravathi,4,2,1,5,0,0,12
+PUDUKOTTAI,Pudukkottai,9,1,1,7,4,0,22
+RAILWAY CHENNAI,Central,2,0,2,47,0,4,55
+RAILWAY CHENNAI,Coimbatore,1,0,1,5,0,1,8
+RAILWAY CHENNAI,Egmore,2,1,2,35,0,5,45
+RAILWAY CHENNAI,Salem,0,0,0,9,0,2,11
+RAILWAY TRICHY,Madurai,0,0,0,5,0,0,5
+RAILWAY TRICHY,Tirunelveli,0,0,0,8,0,0,8
+RAILWAY TRICHY,Trichy,1,0,0,20,0,0,21
+RAMANATHAPURAM,Kamuthi,3,2,0,5,0,0,10
+RAMANATHAPURAM,Keelakarai,4,0,0,5,1,0,10
+RAMANATHAPURAM,Mudukulathur,3,1,1,8,1,0,14
+RAMANATHAPURAM,Paramakudi,5,1,0,11,1,1,19
+RAMANATHAPURAM,Rameswaram,7,0,2,5,0,0,14
+RAMANATHAPURAM,Ramnad,6,0,0,9,3,2,20
+RAMANATHAPURAM,Thiruvadanai,5,1,1,5,0,1,13
+RANIPET,Arakkonam,11,0,1,17,1,3,33
+RANIPET,Ranipet,14,0,0,9,1,1,25
+SALEM,Attur,7,0,0,12,0,0,19
+SALEM,Mettur,7,0,0,4,0,0,11
+SALEM,Omalur,11,2,2,12,2,1,30
+SALEM,Salem Rural,3,0,0,3,0,1,7
+SALEM,Sankari,8,0,0,7,0,1,16
+SALEM,Valappady,1,0,0,4,2,1,8
+SALEM CITY,Ammapet,4,0,0,7,0,0,11
+SALEM CITY,Annathanapatty,3,0,0,8,0,1,12
+SALEM CITY,Hasthampatty,3,1,0,3,3,1,11
+SALEM CITY,Kondalampatty,1,0,0,5,1,0,7
+SALEM CITY,Sooramangalam,2,0,1,17,2,4,26
+SALEM CITY,Town,2,0,0,4,0,1,7
+SIVAGANGAI,Devakottai,10,0,0,6,3,0,19
+SIVAGANGAI,Karaikudi,3,0,1,12,6,0,22
+SIVAGANGAI,Manamadurai,11,0,1,4,0,1,17
+SIVAGANGAI,Sivagangai,10,1,0,10,5,2,28
+SIVAGANGAI,Thiruppathur,3,1,0,1,4,3,12
+TAMBARAM,Guduvanchery,10,0,3,43,1,0,57
+TAMBARAM,Kelambakkam,14,1,3,14,1,0,33
+TAMBARAM,Manimangalam,6,0,2,22,1,0,31
+TAMBARAM,Pallavaram,14,0,4,18,1,1,38
+TAMBARAM,Selaiyur,8,0,1,15,1,1,26
+TAMBARAM,Semmenchery,7,0,1,5,0,0,13
+TAMBARAM,Tambaram,2,0,2,8,0,0,12
+TENKASI,Alankulam,12,0,1,3,5,1,22
+TENKASI,Puliyankudi,12,0,0,8,2,2,24
+TENKASI,Sankarankovil,4,0,0,0,1,2,7
+TENKASI,Tenkasi,10,3,0,16,2,2,33
+THANJAVUR,Kumbakonam,8,0,0,14,0,1,23
+THANJAVUR,Orathanadu,6,0,0,14,0,0,20
+THANJAVUR,Pattukkottai,11,0,0,14,2,1,28
+THANJAVUR,Thanjavur Rural,5,1,0,8,1,0,15
+THANJAVUR,Thanjavur Town,6,1,1,29,1,2,40
+THANJAVUR,Thiruvaiyaru,8,0,0,3,0,1,12
+THANJAVUR,Thiruvidaimaruthur,13,0,0,3,0,1,17
+THANJAVUR,Vallam,9,0,0,19,1,2,31
+THENI,Andipatty,4,0,0,6,1,1,12
+THENI,Bodi,13,1,0,5,2,0,21
+THENI,Periyakulam,6,0,0,11,3,0,20
+THENI,Theni,9,0,0,14,6,0,29
+THENI,Uthamapalayam,20,0,0,9,2,0,31
+THOOTHUKUDI,Kovilpatti,15,0,0,8,1,0,24
+THOOTHUKUDI,Maniyachi,2,2,1,2,1,1,9
+THOOTHUKUDI,Sathankulam,6,0,0,2,0,2,10
+THOOTHUKUDI,Srivaikundam,8,1,1,7,4,0,21
+THOOTHUKUDI,Thoothukudi Rural,12,2,0,10,5,5,34
+THOOTHUKUDI,Thoothukudi Town,26,1,3,22,3,2,57
+THOOTHUKUDI,Tiruchendur,3,1,1,11,2,1,19
+THOOTHUKUDI,Vilathikulam,5,0,0,10,3,2,20
+TIRUNELVELI,Ambasamudram,4,0,0,3,2,0,9
+TIRUNELVELI,Cheranmahadevi,5,1,1,3,1,0,11
+TIRUNELVELI,Nanguneri,7,0,0,7,1,0,15
+TIRUNELVELI,Tirunelveli Rural,15,1,1,7,0,1,25
+TIRUNELVELI,Valliyoor,13,0,1,8,3,1,26
+TIRUNELVELI CITY,Junction,5,0,0,8,0,0,13
+TIRUNELVELI CITY,Melapalayam,6,0,1,8,1,0,16
+TIRUNELVELI CITY,Palayamkottai,3,0,0,6,3,2,14
+TIRUNELVELI CITY,Tirunelveli Town,4,0,1,3,2,0,10
+TIRUPATHUR,Ambur,5,0,1,5,1,0,12
+TIRUPATHUR,Tirupathur,11,1,0,7,1,0,20
+TIRUPATHUR,Vaniyambadi,5,0,0,14,0,1,20
+TIRUPPUR,Avinashi,5,0,1,19,3,0,28
+TIRUPPUR,Dharapuram,3,0,0,8,0,1,12
+TIRUPPUR,Kangeyam,7,0,0,11,2,1,21
+TIRUPPUR,Palladam,11,1,14,36,2,0,64
+TIRUPPUR,Udumalpet,9,0,0,3,1,0,13
+TIRUPPUR CITY,Anuparpalayam,3,1,0,15,0,0,19
+TIRUPPUR CITY,Kongu,8,3,1,17,1,3,33
+TIRUPPUR CITY,KVR Nagar,4,0,0,12,2,1,19
+TIRUPPUR CITY,Nallur,4,0,0,9,1,1,15
+TIRUVALLUR,Gummidipoondi,5,0,1,12,0,0,18
+TIRUVALLUR,Ponneri,2,0,0,2,0,0,4
+TIRUVALLUR,Thiruthani,3,0,1,7,2,1,14
+TIRUVALLUR,Thiruvallur,2,0,0,10,5,6,23
+TIRUVALLUR,Uthukottai,6,1,0,6,4,1,18
+TIRUVANNAMALAI,Arni,4,0,0,5,1,0,10
+TIRUVANNAMALAI,Chengam,5,0,1,2,1,0,9
+TIRUVANNAMALAI,Cheyyar,7,0,0,11,0,0,18
+TIRUVANNAMALAI,Polur,10,0,0,3,1,1,15
+TIRUVANNAMALAI,Tiruvannamalai Rural,4,0,1,2,3,0,10
+TIRUVANNAMALAI,Tiruvannamalai Town,7,1,0,11,3,4,26
+TIRUVANNAMALAI,Vandavasi,4,0,1,3,2,0,10
+TIRUVARUR,Mannargudi,3,1,0,3,0,1,8
+TIRUVARUR,Muthupettai,2,0,0,0,0,2,4
+TIRUVARUR,Nannilam,7,0,0,8,1,0,16
+TIRUVARUR,Thiruthuraipoondi,6,0,0,1,0,0,7
+TIRUVARUR,Thiruvarur,2,0,1,6,0,0,9
+TRICHY,Jeeyapuram,9,1,1,14,1,0,26
+TRICHY,Lalgudi,6,0,1,11,4,2,24
+TRICHY,Manapparai,4,0,0,6,3,3,16
+TRICHY,Musiri,12,0,1,9,3,2,27
+TRICHY,Thiruverumbur,5,0,0,8,1,2,16
+TRICHY CITY,Cantonment,1,0,0,12,4,1,18
+TRICHY CITY,Gandhi Market,4,1,1,1,0,2,9
+TRICHY CITY,Golden Rock,4,0,0,0,0,1,5
+TRICHY CITY,K.K. Nagar,3,0,1,5,0,0,9
+TRICHY CITY,Srirangam,3,0,1,7,1,0,12
+TRICHY CITY,Thillai Nagar,6,0,0,14,2,3,25
+VELLORE,Gudiyatham,7,0,0,4,1,1,13
+VELLORE,Katpadi,4,0,0,5,1,0,10
+VELLORE,Vellore,13,0,0,15,9,5,42
+VILLUPURAM,Gingee,0,0,0,5,3,1,9
+VILLUPURAM,Kottakuppam,7,0,1,6,2,1,17
+VILLUPURAM,Tindivanam,3,0,0,12,2,0,17
+VILLUPURAM,Viluppuram,11,2,0,9,6,1,29
+VIRUDHUNAGAR,Aruppukkottai,5,1,1,12,7,0,26
+VIRUDHUNAGAR,Rajapalayam,13,1,0,7,3,4,28
+VIRUDHUNAGAR,Sattur,6,0,0,5,3,1,15
+VIRUDHUNAGAR,Sivakasi,8,0,0,12,3,2,25
+VIRUDHUNAGAR,Srivilliputhur,7,0,0,3,3,2,15
+VIRUDHUNAGAR,Thiruchuli,6,0,0,6,2,0,14
+VIRUDHUNAGAR,Virudhunagar,11,0,1,5,2,4,23
