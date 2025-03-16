@@ -1,6 +1,6 @@
-CREATE DATABASE register;
+CREATE DATABASE crime_reporting_system;
 
-USE register;
+
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
