@@ -1,28 +1,57 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+const API_URL = "http://localhost:5000/api/auth"; // ✅ Ensure correct backend URL
 
-const API_URL = "http://localhost:5000/api/auth";
-
-// Register User
 export const register = async (userData) => {
-    return await axios.post(`${API_URL}/register`, userData);
+    const response = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text(); // Log full error response
+        console.error("❌ Registration Error:", errorText);
+        throw new Error(errorText || "Registration failed");
+    }
+
+    return await response.json();
 };
 
-// Login User
-export const login = async (userData) => {
-    return await axios.post(`${API_URL}/login`, userData);
-};
+export const login = async (email, password) => {
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
 
-// ✅ Add the missing `useAuth` function
-export const useAuth = () => {
-    const [userRole, setUserRole] = useState(null);
+        // ✅ Log the raw response before parsing
+        const responseText = await response.text();
+        console.log("🟢 Raw Login Response:", responseText);
 
-    useEffect(() => {
-        const storedRole = sessionStorage.getItem("userRole");
-        if (storedRole) {
-            setUserRole(storedRole);
+        if (!response.ok) {
+            console.error("❌ Login Request Failed:", responseText);
+            throw new Error(responseText || "Invalid email or password");
         }
-    }, []);
 
-    return userRole;
+        return JSON.parse(responseText); // ✅ Ensure it's valid JSON before returning
+    } catch (error) {
+        console.error("❌ Login Function Error:", error);
+        throw error;
+    }
+};
+
+export const addPoliceOfficer = async (policeData) => {
+    const response = await fetch(`${API_URL}/add-police`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(policeData),
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Add Police Officer Error:", errorText);
+        throw new Error(errorText || "Failed to add police officer");
+    }
+
+    return JSON.parse(errorText);
 };

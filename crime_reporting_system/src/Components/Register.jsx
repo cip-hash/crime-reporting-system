@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { register } from "../services/authService";
+import { register } from "../services/authService";  // ✅ Import frontend authService
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -29,12 +29,13 @@ const Register = () => {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+
     try {
-      const response = await register(formData); // ✅ Use register API function
+      await register(formData);  // ✅ Call register function
       alert("Registration successful!");
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
     } catch (error) {
-      setErrors({ server: error.response?.data?.message || "Registration failed. Please try again." });
+      setErrors({ server: error.message });
     } finally {
       setLoading(false);
     }
@@ -46,11 +47,12 @@ const Register = () => {
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Create an Account</h1>
         {errors.server && <p className="text-red-500 text-center mb-4">{errors.server}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {[{ label: "Full Name", type: "text", name: "name" },
+          {[
+            { label: "Full Name", type: "text", name: "name" },
             { label: "Email Address", type: "email", name: "email" },
             { label: "Password", type: "password", name: "password" },
-            { label: "Confirm Password", type: "password", name: "confirmPassword" }]
-            .map(({ label, type, name }) => (
+            { label: "Confirm Password", type: "password", name: "confirmPassword" }
+          ].map(({ label, type, name }) => (
             <div key={name}>
               <label className="block font-medium mb-1">{label}</label>
               <input
