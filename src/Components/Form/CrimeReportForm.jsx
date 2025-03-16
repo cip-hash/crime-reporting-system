@@ -26,7 +26,7 @@ const CrimeReportForm = () => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/get_districts",{method:'POST'});
+        const response = await fetch("http://localhost:4000/get_districts");
         const data = await response.json();
         setDistricts(data.districts);
       } catch (error) {
@@ -41,7 +41,7 @@ const CrimeReportForm = () => {
     if (formData.district) {
       const fetchSubdivisions = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/get_subdivisions?district=${encodeURIComponent(formData.district)}`,{method:'POST'});
+          const response = await fetch(`http://localhost:4000/get_subdivisions?district=${encodeURIComponent(formData.district)}`);
           const data = await response.json();
           setSubdivisions(data.subdivisions);
         } catch (error) {
@@ -77,14 +77,14 @@ const CrimeReportForm = () => {
   
     try {
       // Step 1: Get new complaint ID from backend
-      const complaintIdResponse = await fetch("http://localhost:4000/generate_complaint_id",{method:'POST'});
-      const complaintIdData = await complaintIdResponse.json();
-      const complaintIdGenerated = complaintIdData.complaintId;
-      setComplaintId(complaintIdGenerated);
+      const complaintIdResponse = await fetch("http://localhost:4000/generate_complaint_id");
+      const complaintIdGenerated = await complaintIdResponse.json();
+      //const complaintIdGenerated = complaintIdData.complaintId;
+      setComplaintId(complaintIdGenerated.complaintId);
   
       // Step 2: Prepare form data
       const formPayload = new FormData();
-      formPayload.append("complaintId", complaintIdGenerated);
+      formPayload.append("complaintId", complaintIdGenerated.complaintId);
       formPayload.append("district", formData.district);
       formPayload.append("subdivision", formData.subdivision);
       formPayload.append("incidentType", formData.incidentType);
@@ -166,11 +166,11 @@ const CrimeReportForm = () => {
           {/* Date & Time */}
           <div className={styles['form-row']}>
             <div className={styles['form-group']}>
-              <label>Date <span>*</span></label>
+              <label>Incident Date <span>*</span></label>
               <input type="date" name="date" value={formData.date} onChange={handleChange} required />
             </div>
             <div className={styles['form-group']}>
-              <label>Time <span>*</span></label>
+              <label>Incident Time <span>*</span></label>
               <input type="time" name="time" value={formData.time} onChange={handleChange} required />
             </div>
           </div>

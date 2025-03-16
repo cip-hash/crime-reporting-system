@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "./PoliceViewComplaint.module.scss";
 
 const PoliceViewComplaint = () => {
@@ -9,23 +8,24 @@ const PoliceViewComplaint = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch complaints
+  const fetchComplaints = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/get_complaints", {method: "GET",});
+      if (!res.ok) throw new Error("Failed to fetch complaints");
+      const data = await res.json();
+      setComplaints(data);
+    } catch (error) {
+      console.error("Error fetching complaints:", error);
+      alert("Failed to fetch complaints.");
+    } finally {setLoading(false);}
+  };
+
   useEffect(() => {
-    const fetchComplaints = async () => {
-      try {
-        const res = await axios.post("http://localhost:4000/get_complaints");
-        setComplaints(res.data);
-      } catch (error) {
-        console.error("Error fetching complaints:", error);
-        alert("Failed to fetch complaints.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchComplaints();
   }, []);
 
   // Handle status update
-  const handleStatusUpdate = async (complaintId, currentStatus) => {
+  const handleStatusUpdate = async (complaintId) => {
     let selectedStatus = status[complaintId];
 
     if (!selectedStatus) {
@@ -33,20 +33,26 @@ const PoliceViewComplaint = () => {
       return;
     }
 
-    // Auto convert "Accepted" to "Under Investigation"
+    // If 'Accepted', auto-convert to 'Under Investigation' before sending to backend
     if (selectedStatus === "Accepted") {
       selectedStatus = "Under Investigation";
     }
 
     try {
-      await axios.put(`http://localhost:4000/update_complaint_status/${complaintId}`, { status: selectedStatus });
+      const res = await fetch(`http://localhost:4000/update_complaint_status/${complaintId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: selectedStatus }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update status");
+
       alert("Status updated successfully!");
+      await fetchComplaints(); // Refresh complaints after update
 
-      // Refresh complaints list
-      const res = await axios.post("http://localhost:4000/get_complaints");
-      setComplaints(res.data);
-
-      // Clear the status for this complaint after update
+      // Clear status selection and collapse card
       setStatus((prev) => ({ ...prev, [complaintId]: "" }));
       setSelectedComplaintId(null);
     } catch (error) {
@@ -59,18 +65,17 @@ const PoliceViewComplaint = () => {
   const getNextStatusOptions = (currentStatus) => {
     switch (currentStatus) {
       case "Pending":
-        return ["Accepted", "Rejected"]; // Only these two options at this stage
+        return ["Accepted", "Rejected"]; // From pending, choose either
       case "Under Investigation":
-        return ["Closed"]; // Only allowed to close
+        return ["Closed"]; // From under investigation, only close
       default:
-        return []; // Rejected and Closed are final
+        return []; // If Rejected or Closed, no further action
     }
   };
 
-  // Function to show current status (replace Accepted with Under Investigation)
+  // Display logic: treat 'Accepted' as 'Under Investigation'
   const getDisplayStatus = (status) => {
-    if (status === "Accepted") return "Under Investigation"; // Accepted is never shown, treated as Under Investigation
-    return status;
+    return status === "Accepted" ? "Under Investigation" : status;
   };
 
   return (
@@ -93,13 +98,16 @@ const PoliceViewComplaint = () => {
               {/* Summary view */}
               <div
                 onClick={() =>
-                  setSelectedComplaintId(selectedComplaintId === c.complaint_id ? null : c.complaint_id)
+                  setSelectedComplaintId(
+                    selectedComplaintId === c.complaint_id ? null : c.complaint_id
+                  )
                 }
               >
                 <h4><b>ID:</b> {c.complaint_id}</h4>
                 <p><b>Type:</b> {c.incident_type}</p>
               </div>
 
+              {/* Expanded details */}
               {selectedComplaintId === c.complaint_id && (
                 <div className={styles["complaint-details"]}>
                   {c.title && <p><b>Title:</b> {c.title}</p>}
@@ -112,7 +120,7 @@ const PoliceViewComplaint = () => {
                   {c.victim_details && <p><b>Victim:</b> {c.victim_details}</p>}
                   {c.witness_details && <p><b>Witness:</b> {c.witness_details}</p>}
 
-                  {/* Evidence */}
+                  {/* Evidence files */}
                   {c.evidence_files && c.evidence_files.length > 0 && (
                     <div className={styles["evidence-files"]}>
                       <p><b>Evidence Files:</b></p>
@@ -133,29 +141,35 @@ const PoliceViewComplaint = () => {
                   )}
 
                   {/* Status Section */}
-                  <div className={styles["status-section"]} onClick={(e) => e.stopPropagation()} >// prevent collapsing
+                  <div
+                    className={styles["status-section"]}
+                    onClick={(e) => e.stopPropagation()} // Prevent collapsing when interacting
+                  >
                     <p><b>Current Status:</b> {getDisplayStatus(c.status)}</p>
 
-                    {/* Only show status update if allowed */}
-                   {getNextStatusOptions(getDisplayStatus(c.status)).length > 0 ? (
+                    {/* Status update options */}
+                    {getNextStatusOptions(getDisplayStatus(c.status)).length > 0 && (
                       <>
                         <label>Update Status:</label>
                         <select
                           value={status[c.complaint_id] || ""}
                           onChange={(e) =>
-                            setStatus((prev) => ({ ...prev, [c.complaint_id]: e.target.value }))
+                            setStatus((prev) => ({
+                              ...prev,
+                              [c.complaint_id]: e.target.value,
+                            }))
                           }
                         >
                           <option value="">Select Status</option>
                           {getNextStatusOptions(getDisplayStatus(c.status)).map((option, idx) => (
-                            <option key={idx} value={option}>
-                              {option}
-                            </option>
+                            <option key={idx} value={option}>{option}</option>
                           ))}
                         </select>
-                        <button onClick={() => handleStatusUpdate(c.complaint_id, c.status)}>Update Status</button>
+                        <button onClick={() => handleStatusUpdate(c.complaint_id)}>
+                          Update Status
+                        </button>
                       </>
-                    ) : (<></>)}
+                    )}
                   </div>
                 </div>
               )}

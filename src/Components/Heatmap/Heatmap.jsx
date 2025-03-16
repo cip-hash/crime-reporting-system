@@ -21,7 +21,7 @@ const Heatmap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   useEffect(() => {
     // Fetch data from backend API
-    fetch('http://localhost:4000/heatmap',{method:'POST'})
+    fetch('http://localhost:4000/heatmap')
       .then((res) => res.json())
       .then((data) => {
         const formattedData = data.map((item) => [
