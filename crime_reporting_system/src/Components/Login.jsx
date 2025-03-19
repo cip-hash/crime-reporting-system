@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../services/authService"; // ✅ Correct import
+import { login } from "../services/authService"; // Ensure this is correctly implemented
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -13,32 +13,33 @@ const Login = () => {
         e.preventDefault();
         setErrors("");
         setLoading(true);
-    
+
         try {
             const response = await login(email, password);
-            console.log("🟢 Login Response:", response); // Debug log
-    
+            console.log("🟢 Login Response:", response);
+
             if (!response || !response.token || !response.user || !response.user.role) {
                 throw new Error("Invalid response from server");
             }
-    
-            try {
-                sessionStorage.setItem("authToken", response.token);
-                sessionStorage.setItem("userRole", response.user.role);
-            } catch (err) {
-                console.error("❌ Session Storage Error:", err);
-            }
-    
-            switch (response.user.role) {
-                case "admin":
-                    navigate("/admin-dashboard");
-                    break;
-                case "police":
-                    navigate("/police-dashboard");
-                    break;
-                default:
-                    navigate("/user-dashboard");
-            }
+
+            // Store authentication details in session storage
+            sessionStorage.setItem("authToken", response.token);
+            sessionStorage.setItem("userRole", response.user.role);
+
+            // ✅ Ensure session storage updates before navigating
+            setTimeout(() => {
+                switch (response.user.role) {
+                    case "admin":
+                        navigate("/admin/dashboard");
+                        break;
+                    case "police":
+                        navigate("/police/dashboard");
+                        break;
+                    default:
+                        navigate("/user/dashboard");
+                }
+            }, 100); // Short delay to allow session storage to take effect
+
         } catch (error) {
             console.error("❌ Login Error:", error);
             setErrors(error.message || "Login failed. Please try again.");
@@ -46,7 +47,6 @@ const Login = () => {
             setLoading(false);
         }
     };
-    
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-blue-100">
@@ -60,7 +60,7 @@ const Login = () => {
                         <label className="block text-gray-700 text-lg">Email Address</label>
                         <input
                             type="email"
-                            autoFocus // ✅ Added autoFocus for better UX
+                            autoFocus
                             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
                             placeholder="Enter your email"
                             value={email}

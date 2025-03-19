@@ -1,10 +1,13 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import helmet from "helmet"; // Security headers
-import morgan from "morgan"; // Logger
-import authRoutes from "./routes/authRoutes.js"; // Ensure .js extension
-import pool from "./config/db.js"; // Ensure db.js uses import syntax
+import helmet from "helmet";
+import morgan from "morgan";
+import authRoutes from "./routes/authRoutes.js"; 
+import adminRoutes from "./routes/adminRoutes.js"; 
+import policeRoutes from "./routes/policeRoutes.js"; 
+import crimeRoutes from "./routes/crimeRoutes.js"; 
+import pool from "./config/db.js"; 
 
 dotenv.config();
 
@@ -13,25 +16,29 @@ const app = express();
 // ✅ Middleware
 app.use(cors());
 app.use(helmet());
-app.use(morgan("dev")); // Logs HTTP requests
-app.use(express.json()); // Replace deprecated bodyParser
+app.use(morgan("dev"));
+app.use(express.json()); 
 
-// ✅ Test Database Connection (PostgreSQL)
+// ✅ Database Connection Test
 const testDbConnection = async () => {
     try {
         await pool.query("SELECT 1");
         console.log("✅ Connected to PostgreSQL Database");
     } catch (err) {
         console.error("❌ PostgreSQL Connection Failed:", err.message);
+        process.exit(1);
     }
 };
 testDbConnection();
 
-// ✅ Routes
-app.use("/api/auth", authRoutes); // Authentication routes
+// ✅ Register Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/police", policeRoutes);
+app.use("/api/crime", crimeRoutes); // ✅ Crime Routes
 
-// ✅ Test Route
-app.post("/", (req, res) => {
+// ✅ Root Test Route
+app.get("/", (req, res) => {
     res.send("🚀 Server is running!");
 });
 
@@ -46,14 +53,10 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message || "🔥 Internal Server Error" });
 });
 
-app.use((req, res, next) => {
-    console.log(`Received ${req.method} request at ${req.url}`);
-    next();
-});
-
-
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
+

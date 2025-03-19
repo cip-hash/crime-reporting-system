@@ -3,12 +3,16 @@ import Home from "./Components/Home";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import Unauthorized from "./Components/Unauthorized"; 
+import Unauthorized from "./Components/Unauthorized";
 
 // Import dashboards
 import AdminDashboard from "./dashboards/admin/AdminDashboard";
+import ManagePolice from "./dashboards/admin/ManagePolice";  // ✅ Import this
 import PoliceDashboard from "./dashboards/police/PoliceDashboard";
 import UserDashboard from "./dashboards/user/UserDashboard";
+import ReportCrime from "./dashboards/user/ReportCrime";
+import TrackStatus from "./dashboards/user/TrackStatus";
+import MyReports from "./dashboards/user/MyReports";
 
 function App() {
   return (
@@ -23,18 +27,21 @@ function App() {
             <Route path="/unauthorized" element={<Unauthorized />} />
 
             {/* Protected Routes */}
-            <Route
-              path="/admin/dashboard"
-              element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>}
-            />
-            <Route
-              path="/police/dashboard"
-              element={<ProtectedRoute role="police"><PoliceDashboard /></ProtectedRoute>}
-            />
-            <Route
-              path="/user/dashboard"
-              element={<ProtectedRoute role="user"><UserDashboard /></ProtectedRoute>}
-            />
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/manage-police" element={<ManagePolice />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRoles={["police"]} />}>
+              <Route path="/police/dashboard" element={<PoliceDashboard />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
+              <Route path="/user/dashboard" element={<UserDashboard />} />
+              <Route path="/user/report-crime" element={<ReportCrime />} />
+              <Route path="/user/track-status" element={<TrackStatus />} />
+              <Route path="/user/my-reports" element={<MyReports />} />
+            </Route>
           </Routes>
         </div>
       </div>

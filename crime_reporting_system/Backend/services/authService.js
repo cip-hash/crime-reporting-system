@@ -8,6 +8,9 @@ const register = async ({ name, email, password, role = "user" }) => {
     try {
         console.log("🟢 Registering user:", { name, email, role });
 
+        // Convert email to lowercase to avoid case-sensitive duplicates
+        email = email.toLowerCase().trim();
+
         // Check if user already exists
         const existingUser = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
         if (existingUser.rows.length > 0) {
@@ -32,7 +35,7 @@ const register = async ({ name, email, password, role = "user" }) => {
 
         // 🔥 Run query and log result
         const result = await pool.query(query, values);
-        console.log("✅ User Registered Successfully:", result);
+        console.log("✅ User Registered Successfully:", result.rows[0]);
 
         return result.rows[0]; // Return the registered user details
     } catch (error) {
@@ -43,19 +46,28 @@ const register = async ({ name, email, password, role = "user" }) => {
 
 const login = async (email, password) => {
     try {
+        // Convert email to lowercase to avoid case-sensitive mismatches
+        email = email.toLowerCase().trim();
+
         const query = "SELECT * FROM users WHERE email = $1";
         const { rows } = await pool.query(query, [email]);
 
         if (rows.length === 0) {
+            console.error("❌ Login failed: Email not found", email);
             throw new Error("Invalid email or password");
         }
 
         const user = rows[0];
-        const isMatch = await bcrypt.compare(password, user.password);
+        console.log("🔎 User found:", user.email);
 
+        // Ensure password is properly compared
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            console.error("❌ Login failed: Incorrect password");
             throw new Error("Invalid email or password");
         }
+
+        console.log("✅ Password match successful");
 
         // Generate JWT token
         const token = jwt.sign(
@@ -64,7 +76,10 @@ const login = async (email, password) => {
             { expiresIn: "1h" }
         );
 
-        return { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
+        return { 
+            token, 
+            user: { id: user.id, name: user.name, email: user.email, role: user.role } 
+        };
     } catch (error) {
         console.error("❌ Error in login:", error);
         throw error;
@@ -73,6 +88,9 @@ const login = async (email, password) => {
 
 const addPoliceOfficer = async ({ name, email, password }) => {
     try {
+        // Convert email to lowercase to avoid case-sensitive duplicates
+        email = email.toLowerCase().trim();
+
         // Check if police officer already exists
         const existingUser = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
         if (existingUser.rows.length > 0) {
