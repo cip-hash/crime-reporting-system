@@ -10,6 +10,7 @@ const PoliceDashboard = () => {
     const [reports, setReports] = useState([]);
     const [crimeStats, setCrimeStats] = useState({});
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(null);
 
     useEffect(() => {
         fetchReports();
@@ -46,6 +47,27 @@ const PoliceDashboard = () => {
         } catch (error) {
             console.error("❌ Error fetching crime statistics:", error);
             setError("Failed to load crime statistics.");
+        }
+    };
+
+    // ✅ Handle status update
+    const updateStatus = async (id, newStatus) => {
+        setLoading(id); // Set loading for this report
+        try {
+            const response = await axios.patch(`http://localhost:5000/api/crime/update-status/${id}`, { status: newStatus });
+            console.log("✅ Status Updated:", response.data);
+
+            // ✅ Update the reports state with new status
+            setReports((prevReports) =>
+                prevReports.map((report) =>
+                    report.id === id ? { ...report, status: newStatus } : report
+                )
+            );
+        } catch (error) {
+            console.error("❌ Error updating status:", error);
+            setError("Failed to update status. Try again later.");
+        } finally {
+            setLoading(null); // Remove loading state
         }
     };
 
@@ -88,7 +110,7 @@ const PoliceDashboard = () => {
                             <th className="border p-2">Date</th>
                             <th className="border p-2">District</th>
                             <th className="border p-2">Subdivision</th>
-                            <th className="border p-2">Details</th>
+                            <th className="border p-2">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,9 +123,17 @@ const PoliceDashboard = () => {
                                     <td className="border p-2">{report.district}</td>
                                     <td className="border p-2">{report.subdivision}</td>
                                     <td className="border p-2">
-                                        <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                                            View
-                                        </button>
+                                        <select
+                                            className="bg-gray-200 border p-1 rounded"
+                                            value={report.status}
+                                            onChange={(e) => updateStatus(report.id, e.target.value)}
+                                            disabled={loading === report.id}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Under Investigation">Under Investigation</option>
+                                            <option value="Resolved">Resolved</option>
+                                            <option value="Closed">Closed</option>
+                                        </select>
                                     </td>
                                 </tr>
                             ))

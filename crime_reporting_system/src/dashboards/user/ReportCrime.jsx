@@ -20,17 +20,13 @@ const ReportCrime = () => {
   const [error, setError] = useState(null);
   const [loggedInUser, setLoggedInUser] = useState(null);
   
-
-  
-
   //Fetch Logged-in user-id
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("loggedInUser")); // Fetch user data
     if (user) {
         setLoggedInUser(user);
     }
-}, []);
-
+  }, []);
 
   // Fetch districts from backend
   useEffect(() => {
@@ -46,10 +42,10 @@ const ReportCrime = () => {
     };
 
     fetchDistricts();
-}, []);
+  }, []);
 
-// ✅ Fetch Subdivisions When District Changes
-useEffect(() => {
+  // ✅ Fetch Subdivisions When District Changes
+  useEffect(() => {
     if (!formData.district) {
         setSubdivisions([]);
         return;
@@ -67,7 +63,7 @@ useEffect(() => {
     };
 
     fetchSubdivisions();
-}, [formData.district]); 
+  }, [formData.district]); 
 
   // Set default date and time
   useEffect(() => {
@@ -161,132 +157,294 @@ useEffect(() => {
         console.error("❌ Error submitting crime report:", error);
         alert("Failed to submit crime report. Check console for details.");
     }
-};
-
-// return (
-//     <div>
-//         <h2>Report a Crime</h2>
-//         <form onSubmit={handleSubmit}>
-//             <input type="text" placeholder="Incident Type" value={formData.incidentType} onChange={(e) => setFormData({...formData, incidentType: e.target.value})} />
-//             <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
-//             <input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
-//             <input type="text" placeholder="District" value={formData.district} onChange={(e) => setFormData({...formData, district: e.target.value})} />
-//             <input type="text" placeholder="Subdivision" value={formData.subdivision} onChange={(e) => setFormData({...formData, subdivision: e.target.value})} />
-//             <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
-//             <button type="submit">Submit Report</button>
-//         </form>
-//     </div>
-// );
-// };
-
+  };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6 mt-10">
-      <h2 className="text-2xl font-bold text-center mb-4">Online Crime Report Form</h2>
+    <div className="max-w-3xl mx-auto">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 rounded-t-lg">
+        <h2 className="text-2xl font-bold text-white text-center">Online Crime Report Form</h2>
+        <p className="text-blue-100 text-center text-sm mt-1">All information will be kept confidential</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Incident Type */}
-        <div>
-          <label className="font-semibold">Incident Type *</label>
-          <select id="incidentType" value={formData.incidentType} onChange={handleChange} required className="w-full border p-2 rounded-md">
-            <option value="">Select Incident Type</option>
-            <option value="Theft">Theft</option>
-            <option value="Assault">Assault</option>
-            <option value="Fraud">Fraud</option>
-            <option value="Harassment">Harassment</option>
-          </select>
-        </div>
+      <div className="bg-white p-6 rounded-b-lg shadow-md border border-gray-200">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Incident Information Section */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Incident Information
+            </h3>
+            
+            {/* Incident Type */}
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Incident Type <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select 
+                  id="incidentType" 
+                  value={formData.incidentType} 
+                  onChange={handleChange} 
+                  required 
+                  className="block w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
+                >
+                  <option value="">Select Incident Type</option>
+                  <option value="Theft">Theft</option>
+                  <option value="Assault">Assault</option>
+                  <option value="Fraud">Fraud</option>
+                  <option value="Harassment">Harassment</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
 
-        {/* Date & Time */}
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="font-semibold">Date *</label>
-            <input type="date" id="date" value={formData.date} onChange={handleChange} required className="w-full border p-2 rounded-md" />
+            {/* Date & Time */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Date <span className="text-red-500">*</span>
+                </label>
+                <input 
+                  type="date" 
+                  id="date" 
+                  value={formData.date} 
+                  onChange={handleChange} 
+                  required 
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Time <span className="text-red-500">*</span>
+                </label>
+                <input 
+                  type="time" 
+                  id="time" 
+                  value={formData.time} 
+                  onChange={handleChange} 
+                  required 
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex-1">
-            <label className="font-semibold">Time *</label>
-            <input type="time" id="time" value={formData.time} onChange={handleChange} required className="w-full border p-2 rounded-md" />
+
+          {/* Location Section */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Location Details
+            </h3>
+            
+            {/* District Dropdown */}
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                District <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  id="district"
+                  value={formData.district}
+                  onChange={(e) => {
+                    setFormData({ ...formData, district: e.target.value, subdivision: "" });
+                    console.log("✅ Selected District:", e.target.value);
+                  }}
+                  required
+                  className="block w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
+                >
+                  <option value="">-- Select District --</option>
+                  {districts.map((district, index) => (
+                    <option key={index} value={district}>
+                      {district}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Subdivision Dropdown */}
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Subdivision <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  id="subdivision"
+                  value={formData.subdivision}
+                  onChange={(e) => {
+                    setFormData({ ...formData, subdivision: e.target.value });
+                    console.log("✅ Selected Subdivision:", e.target.value);
+                  }}
+                  disabled={!formData.district || subdivisions.length === 0}
+                  required
+                  className={`block w-full px-4 py-2 pr-8 rounded-lg shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                    !formData.district || subdivisions.length === 0
+                      ? "bg-gray-100 text-gray-500 border border-gray-300 cursor-not-allowed"
+                      : "bg-white border border-gray-300 hover:border-gray-400 text-gray-700"
+                  }`}
+                >
+                  <option value="">-- Select Subdivision --</option>
+                  {subdivisions.map((subdivision, index) => (
+                    <option key={index} value={subdivision}>
+                      {subdivision}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+              {!formData.district && (
+                <p className="text-xs text-blue-600 mt-1">Please select a district first</p>
+              )}
+            </div>
           </div>
-        </div>
 
-      
-{/* District Dropdown */}
-<label>
-    Select District:
-    <select
-        value={formData.district}
-        onChange={(e) => {
-            setFormData({ ...formData, district: e.target.value, subdivision: "" }); // Reset subdivision when district changes
-            console.log("✅ Selected District:", e.target.value); // Debugging line
-        }}
-    >
-        <option value="">-- Select District --</option>
-        {districts.map((district, index) => (
-            <option key={index} value={district}>
-                {district}
-            </option>
-        ))}
-    </select>
-</label>
+          {/* Description */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Crime Details
+            </h3>
+            
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <textarea 
+                id="description" 
+                value={formData.description} 
+                onChange={handleChange} 
+                required 
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                rows="4"
+                placeholder="Please provide detailed information about the incident..."
+              ></textarea>
+            </div>
 
-{/* Subdivision Dropdown */}
-<label>
-    Select Subdivision:
-    <select
-        value={formData.subdivision}
-        onChange={(e) => {
-            setFormData({ ...formData, subdivision: e.target.value });
-            console.log("✅ Selected Subdivision:", e.target.value); // Debugging line
-        }}
-        disabled={!formData.district || subdivisions.length === 0}
-    >
-        <option value="">-- Select Subdivision --</option>
-        {subdivisions.map((subdivision, index) => (
-            <option key={index} value={subdivision}>
-                {subdivision}
-            </option>
-        ))}
-    </select>
-</label>
+            {/* Suspect, Victim, Witness */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Suspect Details
+                </label>
+                <input 
+                  type="text" 
+                  id="suspect" 
+                  value={formData.suspect} 
+                  onChange={handleChange} 
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                  placeholder="Description of suspect(s) if any"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Victim Details
+                </label>
+                <input 
+                  type="text" 
+                  id="victim" 
+                  value={formData.victim} 
+                  onChange={handleChange} 
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                  placeholder="Details of victim(s) if different from reporter"
+                />
+              </div>
+            </div>
 
-
-        {/* Description */}
-        <div>
-          <label className="font-semibold">Description *</label>
-          <textarea id="description" value={formData.description} onChange={handleChange} required className="w-full border p-2 rounded-md" rows="3"></textarea>
-        </div>
-
-        {/* Suspect, Victim, Witness */}
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="font-semibold">Suspect Details</label>
-            <input type="text" id="suspect" value={formData.suspect} onChange={handleChange} className="w-full border p-2 rounded-md" />
+            <div className="mt-4">
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Witness Details
+              </label>
+              <input 
+                type="text" 
+                id="witness" 
+                value={formData.witness} 
+                onChange={handleChange} 
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                placeholder="Information about any witnesses"
+              />
+            </div>
           </div>
-          <div className="flex-1">
-            <label className="font-semibold">Victim Details</label>
-            <input type="text" id="victim" value={formData.victim} onChange={handleChange} className="w-full border p-2 rounded-md" />
+
+          {/* Evidence Upload */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Evidence
+            </h3>
+            
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-1">
+                Upload Evidence (Photos, Documents, etc.)
+              </label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                <div className="space-y-1 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <div className="flex text-sm text-gray-600">
+                    <label htmlFor="evidence" className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+                      <span>Upload files</span>
+                      <input 
+                        id="evidence" 
+                        type="file" 
+                        multiple 
+                        onChange={handleFileChange} 
+                        className="sr-only" 
+                      />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, PDF up to 10MB each
+                  </p>
+                </div>
+              </div>
+              {formData.evidence.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm text-gray-600">{formData.evidence.length} file(s) selected</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <label className="font-semibold">Witness Details</label>
-          <input type="text" id="witness" value={formData.witness} onChange={handleChange} className="w-full border p-2 rounded-md" />
-        </div>
-
-        {/* File Upload */}
-        <div>
-          <label className="font-semibold">Upload Evidence</label>
-          <input type="file" id="evidence" multiple onChange={handleFileChange} className="w-full border p-2 rounded-md" />
-        </div>
-
-        {/* Submit Button */}
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-          Submit Report
-        </button>
-      </form>
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button 
+              type="submit" 
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md transition-all flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              Submit Report
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
-
 
 export default ReportCrime;
