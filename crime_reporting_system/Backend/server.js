@@ -9,6 +9,7 @@ import policeRoutes from "./routes/policeRoutes.js";
 import crimeRoutes from "./routes/crimeRoutes.js"; 
 import pool from "./config/db.js"; 
 
+
 dotenv.config();
 
 const app = express();
