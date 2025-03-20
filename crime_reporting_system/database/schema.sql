@@ -10,3 +10,40 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+ CREATE TABLE crime_reports (
+    id SERIAL PRIMARY KEY,
+     incident_type VARCHAR(50) NOT NULL,
+     date DATE NOT NULL,
+     time TIME NOT NULL,
+     district VARCHAR(100) NOT NULL,
+     subdivision VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL,
+    suspect TEXT,
+    victim TEXT,
+    witness TEXT,
+    evidence TEXT[], -- Array of file paths for evidence storage
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+select * from crime_reports;
+CREATE TABLE crime_statistics (
+    id SERIAL PRIMARY KEY,
+    district TEXT,
+    subdivision TEXT,
+    murder INT,
+    murder_for_gain INT,
+    dacoity INT,
+    robbery INT,
+    grave_burglary INT,
+    grave_theft INT,
+    other INT,
+    total_crimes INT,
+    latitude DECIMAL(10, 6),
+    longitude DECIMAL(10, 6),
+        user_id INT
+);
+
+
+
+
+
