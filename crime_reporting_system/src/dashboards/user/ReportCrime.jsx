@@ -18,9 +18,19 @@ const ReportCrime = () => {
   const [subdivisions, setSubdivisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null);
   
 
   
+
+  //Fetch Logged-in user-id
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Fetch user data
+    if (user) {
+        setLoggedInUser(user);
+    }
+}, []);
+
 
   // Fetch districts from backend
   useEffect(() => {
@@ -87,13 +97,20 @@ useEffect(() => {
   };
 
   //function that work after form submission
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("📌 Form Data Before Submission:", formData); // Debugging Line
+    console.log("📌 Form Data Before Submission:", formData);
 
-    // Check if all required fields are filled
-    if (!formData.incidentType || !formData.date || !formData.time || 
+    // Ensure userId is available
+    if (!loggedInUser || !loggedInUser.id) {
+        alert("⚠️ User is not logged in. Please log in to submit a report.");
+        console.error("❌ Missing user ID");
+        return;
+    }
+
+    // Validate required fields
+    if (!formData.incidentType || !formData.date || !formData.time ||
         !formData.district || !formData.subdivision || !formData.description) {
         alert("⚠️ Please fill all required fields.");
         console.error("❌ Missing required fields:", formData);
@@ -101,12 +118,20 @@ const handleSubmit = async (e) => {
     }
 
     try {
+        // Add userId to the form data
+        const reportData = {
+            ...formData,
+            userId: loggedInUser.id,  // Include user ID
+        };
+
+        console.log("📌 Final Data Sent to Backend:", reportData);
+
         const response = await fetch("http://localhost:5000/api/crime/report", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(reportData),
         });
 
         if (!response.ok) {
@@ -137,6 +162,22 @@ const handleSubmit = async (e) => {
         alert("Failed to submit crime report. Check console for details.");
     }
 };
+
+// return (
+//     <div>
+//         <h2>Report a Crime</h2>
+//         <form onSubmit={handleSubmit}>
+//             <input type="text" placeholder="Incident Type" value={formData.incidentType} onChange={(e) => setFormData({...formData, incidentType: e.target.value})} />
+//             <input type="date" value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} />
+//             <input type="time" value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} />
+//             <input type="text" placeholder="District" value={formData.district} onChange={(e) => setFormData({...formData, district: e.target.value})} />
+//             <input type="text" placeholder="Subdivision" value={formData.subdivision} onChange={(e) => setFormData({...formData, subdivision: e.target.value})} />
+//             <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
+//             <button type="submit">Submit Report</button>
+//         </form>
+//     </div>
+// );
+// };
 
 
   return (
@@ -246,5 +287,6 @@ const handleSubmit = async (e) => {
     </div>
   );
 };
+
 
 export default ReportCrime;
