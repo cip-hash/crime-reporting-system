@@ -25,7 +25,11 @@ const Login = () => {
             // Store authentication details in session storage
             sessionStorage.setItem("authToken", response.token);
             sessionStorage.setItem("userRole", response.user.role);
-
+            if (response.user.role === "police") {
+                sessionStorage.setItem("policedistrict", response.user.district);
+                sessionStorage.setItem("policesubdivision", response.user.subdivision);
+                console.log('ji');
+            }
             // ✅ Ensure session storage updates before navigating
             setTimeout(() => {
                 switch (response.user.role) {

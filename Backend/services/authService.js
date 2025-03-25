@@ -46,21 +46,38 @@ const register = async ({ name, email, password, role = "user" }) => {
 
 const login = async (email, password) => {
     try {
-        // Convert email to lowercase to avoid case-sensitive mismatches
-        email = email.toLowerCase().trim();
+        email = email.toLowerCase().trim(); // Normalize email
 
-        const query = "SELECT * FROM users WHERE email = $1";
-        const { rows } = await pool.query(query, [email]);
+        // First, check in the users table
+        let query = "SELECT * FROM users WHERE email = $1";
+        let { rows } = await pool.query(query, [email]);
 
+        var userType;
+        if (email == "admin123@gmail.com"){ userType = "admin";}else{userType="user";} // Default role
+        let userDistrict = null;
+        let userSubdivison = null;
+        
         if (rows.length === 0) {
-            console.error("❌ Login failed: Email not found", email);
-            throw new Error("Invalid email or password");
+            // If not found, check in the police table
+            query = "SELECT * FROM police WHERE email = $1";
+            const policeResult = await pool.query(query, [email]);
+
+            if (policeResult.rows.length === 0) {
+                console.error("❌ Login failed: Email not found", email);
+                throw new Error("Invalid email or password");
+            }
+
+            // If found in police table, use police details
+            rows = policeResult.rows;
+            userDistrict=rows[0].district;
+            userSubdivison=rows[0].subdivision;
+            userType = "police"; // Mark as police
         }
 
         const user = rows[0];
-        console.log("🔎 User found:", user.email);
+        console.log("🔎 User found:", user.email, "Role:", userType);
 
-        // Ensure password is properly compared
+        // Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             console.error("❌ Login failed: Incorrect password");
@@ -71,20 +88,21 @@ const login = async (email, password) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user.id, role: user.role },
+            { id: user.id, role: userType,district: userDistrict,subdivision:userSubdivison }, // Role is either "user" or "police"
             JWT_SECRET,
             { expiresIn: "1h" }
         );
 
         return { 
             token, 
-            user: { id: user.id, name: user.name, email: user.email, role: user.role } 
+            user: { id: user.id, name: user.name, email: user.email, role: userType, district: userDistrict,subdivision:userSubdivison } 
         };
     } catch (error) {
         console.error("❌ Error in login:", error);
         throw error;
     }
 };
+
 
 const addPoliceOfficer = async ({ name, email, password }) => {
     try {

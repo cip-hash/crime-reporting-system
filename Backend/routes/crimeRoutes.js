@@ -15,6 +15,7 @@ router.get("/districts", async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "No districts found" });
         }
+        //console.log(result.rows);
         res.json(result.rows);
     } catch (error) {
         console.error("❌ Error fetching districts:", error);
@@ -28,7 +29,7 @@ router.get("/districts", async (req, res) => {
 router.get("/subdivisions", async (req, res) => {
     try {
         const { district } = req.query;
-
+        
         if (!district) {
             return res.status(400).json({ error: "District parameter is required" });
         }
@@ -43,7 +44,7 @@ router.get("/subdivisions", async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "No subdivisions found for this district" });
         }
-
+        console.log(result.rows);
         res.json(result.rows.map(row => row.subdivision)); // Return only subdivision names
     } catch (error) {
         console.error("❌ Error fetching subdivisions:", error);
@@ -119,25 +120,25 @@ router.get("/status/:policeId", async (req, res) => {
     const { policeId } = req.params;
 
     try {
-        const roleQuery = `SELECT role FROM users WHERE id = $1`;
+        const roleQuery = `SELECT * FROM police WHERE id = $1`;
         const roleResult = await pool.query(roleQuery, [policeId]);
 
         if (roleResult.rows.length === 0) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        const userRole = roleResult.rows[0].role;
+        //const userRole = roleResult.rows[0].role;
 
         let query;
         let values;
 
-        if (userRole === "police") {
+        if ( roleResult) {
             // ✅ Fetch all crime reports for police
-            query = `SELECT id, user_id, incident_type, date, district, subdivision, status FROM crime_reports`;
+            query = `SELECT id, user_id, incident_type, date, district, subdivision, status FROM complaints`;
             values = [];
         } else {
             // ✅ Fetch only the user's own reports
-            query = `SELECT id, incident_type, date, district, subdivision, status FROM crime_reports WHERE user_id = $1`;
+            query = `SELECT id, incident_type, date, district, subdivision, status FROM complaints WHERE user_id = $1`;
             values = [policeId];
         }
 
@@ -207,7 +208,7 @@ router.get("/stats", async (req, res) => {
  */
 router.get("/locations", async (req, res) => {
     try {
-        const result = await pool.query("SELECT latitude, longitude FROM crime_reports WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
+        const result = await pool.query("SELECT district,subdivision,latitude, longitude FROM crime_statistics WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
 
         res.json(result.rows);
     } catch (error) {
@@ -216,5 +217,26 @@ router.get("/locations", async (req, res) => {
     }
 });
 
+router.post("/latlong", async (req, res) => {
+    const { dis, sub } = req.body;
+    
+    try {
+        const result = await pool.query(
+            "SELECT  latitude, longitude FROM crime_statistics WHERE district = $1 AND subdivision = $2",
+            [dis, sub]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "No location found for given district & subdivision" });
+        }
+
+        console.log("📍 Location Found:", result.rows[0]);
+        res.json(result.rows[0]);  // Return latitude & longitude
+        console.log(result.rows[0]);
+    } catch (error) {
+        console.error("❌ Error fetching lat/lon for:", dis, sub);
+        res.status(500).json({ error: "Database error" });
+    }
+});
 
 export default router;

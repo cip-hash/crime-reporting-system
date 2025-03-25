@@ -1,4 +1,5 @@
 import express from "express";
+import bcrypt from "bcryptjs";
 import pool from "../config/db.js"; // Ensure database connection is properly imported
 
 const router = express.Router();
@@ -22,11 +23,11 @@ router.post("/add", async (req, res) => {
         if (!name || !email || !password || !district || !subdivision) {
             return res.status(400).json({ message: "All fields are required" });
         }
-
+        const hashpassword = await bcrypt.hash(password, 10);
         // Insert into PostgreSQL
         const newPolice = await pool.query(
             "INSERT INTO police (name, email, password, district,subdivision) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email",
-            [name, email, password, district, subdivision ] // NOTE: Hash passwords before saving in production!
+            [name, email, hashpassword, district, subdivision ] // NOTE: Hash passwords before saving in production!
         );
 
         res.status(201).json({ message: "Police added successfully", data: newPolice.rows[0] });

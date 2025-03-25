@@ -1,152 +1,187 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
+import { Link, useLocation } from "react-router-dom";
+import {FiMap} from "react-icons/fi";
+import PoliceHeatmap from "./PoliceHeatmap";
 const PoliceDashboard = () => {
-    const [reports, setReports] = useState([]);
-    const [crimeStats, setCrimeStats] = useState({});
+    const [complaints, setComplaints] = useState([]);
+    const [selectedComplaintId, setSelectedComplaintId] = useState(null);
+    const [status, setStatus] = useState({});
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(false);
 
+    // ✅ Get logged-in police details from localStorage
+    const policeUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    console.log("policeuser:",policeUser);
+    const policeDistrict = sessionStorage.getItem("policedistrict");
+    const policeSubdivision = sessionStorage.getItem("policesubdivision");
+    const location = useLocation();
+    const isActive = (path) => {
+        return location.pathname.includes(path) ? "bg-blue-700 text-white" : "";
+    };
     useEffect(() => {
-        fetchReports();
-        fetchCrimeStatistics();
+        fetchComplaints();
     }, []);
 
-    // ✅ Get police user ID from localStorage
-    const policeUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    const policeId = policeUser ? policeUser.id : null;
-
-    // ✅ Fetch crime reports for police
-    const fetchReports = async () => {
-        if (!policeId) {
-            setError("Police ID not found. Please log in again.");
+    // ✅ Fetch complaints for logged-in police officer's subdivision
+    const fetchComplaints = async () => {
+        if (!policeDistrict || !policeSubdivision) {
+            setError("District or subdivision not found. Please log in again.");
             return;
         }
 
         try {
-            const response = await axios.get(`http://localhost:5000/api/crime/status/${policeId}`);
-            console.log("🟢 Fetched Reports:", response.data);
-            setReports(response.data);
+            const response = await axios.get(`http://localhost:5000/api/crime/status`, {
+                params: { district: policeDistrict, subdivision: policeSubdivision }
+            });
+            console.log("🟢 Fetched Complaints:", response.data);
+            setComplaints(response.data);
         } catch (error) {
-            console.error("❌ Error fetching reports:", error);
-            setError("Failed to fetch reports. Try again later.");
-        }
-    };
-
-    // ✅ Fetch crime statistics
-    const fetchCrimeStatistics = async () => {
-        try {
-            const response = await axios.get("http://localhost:5000/api/crime/stats");
-            console.log("🟢 Fetched Crime Statistics:", response.data);
-            setCrimeStats(response.data);
-        } catch (error) {
-            console.error("❌ Error fetching crime statistics:", error);
-            setError("Failed to load crime statistics.");
+            console.error("❌ Error fetching complaints:", error);
+            setError("Failed to fetch complaints. Try again later.");
         }
     };
 
     // ✅ Handle status update
-    const updateStatus = async (id, newStatus) => {
-        setLoading(id); // Set loading for this report
-        try {
-            const response = await axios.patch(`http://localhost:5000/api/crime/update-status/${id}`, { status: newStatus });
-            console.log("✅ Status Updated:", response.data);
+    const handleStatusUpdate = async (complaintId) => {
+        if (!status[complaintId]) {
+            alert("Please select a status before updating.");
+            return;
+        }
 
-            // ✅ Update the reports state with new status
-            setReports((prevReports) =>
-                prevReports.map((report) =>
-                    report.id === id ? { ...report, status: newStatus } : report
+        setLoading(true);
+        try {
+            await axios.patch(`http://localhost:5000/api/crime/update-status/${complaintId}`, { 
+                status: status[complaintId] 
+            });
+
+            // ✅ Update the status in UI
+            setComplaints((prevComplaints) =>
+                prevComplaints.map((c) =>
+                    c.complaint_id === complaintId ? { ...c, status: status[complaintId] } : c
                 )
             );
+            console.log(`✅ Status updated for ${complaintId}`);
         } catch (error) {
             console.error("❌ Error updating status:", error);
             setError("Failed to update status. Try again later.");
         } finally {
-            setLoading(null); // Remove loading state
+            setLoading(false);
         }
-    };
-
-    // ✅ Format chart data
-    const chartData = {
-        labels: crimeStats.labels || [],
-        datasets: [
-            {
-                label: "Number of Crimes",
-                data: crimeStats.data || [],
-                backgroundColor: "rgba(75,192,192,0.6)",
-                borderColor: "rgba(75,192,192,1)",
-                borderWidth: 1,
-            },
-        ],
     };
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
-            {/* Dashboard Header */}
-            <h1 className="text-3xl font-bold text-blue-700">🚔 Police Dashboard</h1>
-
-            {/* Display Errors */}
-            {error && <p className="text-red-600 font-semibold mt-2">{error}</p>}
-
-            {/* Crime Statistics Graph */}
-            <div className="bg-white shadow-md rounded-lg p-4 my-6">
-                <h2 className="text-xl font-semibold">📊 Crime Statistics</h2>
-                <Bar data={chartData} />
+            {/* Header */}
+            <h1 className="text-3xl font-bold text-blue-700">🚔 Police Complaint Dashboard</h1>
+            {/* District & Subdivision Display */}
+            <div className="bg-white shadow-md rounded-lg p-4 my-4">
+                <h2 className="text-lg font-semibold text-gray-700">
+                    📍 District: <span className="text-blue-600">{policeDistrict}</span> | 🏛 Subdivision: <span className="text-green-600">{policeSubdivision}</span>
+                </h2>
             </div>
 
-            {/* Crime Reports Table */}
-            <div className="bg-white shadow-md rounded-lg p-4">
-                <h2 className="text-xl font-semibold">📝 Crime Reports</h2>
-                <table className="w-full table-auto border-collapse border border-gray-300 mt-4">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border p-2">ID</th>
-                            <th className="border p-2">Incident Type</th>
-                            <th className="border p-2">Date</th>
-                            <th className="border p-2">District</th>
-                            <th className="border p-2">Subdivision</th>
-                            <th className="border p-2">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {reports.length > 0 ? (
-                            reports.map((report) => (
-                                <tr key={report.id} className="text-center border">
-                                    <td className="border p-2">{report.id}</td>
-                                    <td className="border p-2">{report.incident_type}</td>
-                                    <td className="border p-2">{report.date}</td>
-                                    <td className="border p-2">{report.district}</td>
-                                    <td className="border p-2">{report.subdivision}</td>
-                                    <td className="border p-2">
+            {/* Error Message */}
+            {error && <p className="text-red-600 font-semibold">{error}</p>}
+            <Link 
+                            to="/police/heatmap" 
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/police/heatmap")}`}
+                        >
+                            <FiMap /> <span>Crime Heatmap</span>
+                        </Link>
+            {/* Complaints List */}
+            {loading ? (
+                <p className="text-center">Loading complaints...</p>
+            ) : complaints.length === 0 ? (
+                <p className="text-center text-gray-500">No complaints found.</p>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {complaints.map((c) => (
+                        <div
+                            key={c.complaint_id}
+                            className={`bg-white shadow-md rounded-lg p-4 border ${
+                                selectedComplaintId === c.complaint_id ? "border-blue-500" : ""
+                            }`}
+                            onClick={() =>
+                                setSelectedComplaintId(
+                                    selectedComplaintId === c.complaint_id ? null : c.complaint_id
+                                )
+                            }
+                        >
+                            {/* Summary view */}
+                            <h4 className="font-bold">ID: {c.complaint_id}</h4>
+                            <p><b>Type:</b> {c.incident_type}</p>
+
+                            {/* Expanded details */}
+                            {selectedComplaintId === c.complaint_id && (
+                                <div className="mt-2">
+                                    {c.title && <p><b>Title:</b> {c.title}</p>}
+                                    <p><b>Date:</b> {new Date(c.date).toLocaleDateString()}</p>
+                                    <p><b>Time:</b> {c.time}</p>
+                                    <p><b>District:</b> {c.district}</p>
+                                    <p><b>Subdivision:</b> {c.subdivision}</p>
+                                    <p><b>Description:</b> {c.description}</p>
+                                    {c.suspect_details && <p><b>Suspect:</b> {c.suspect_details}</p>}
+                                    {c.victim_details && <p><b>Victim:</b> {c.victim_details}</p>}
+                                    {c.witness_details && <p><b>Witness:</b> {c.witness_details}</p>}
+
+                                    {/* Evidence files */}
+                                    {c.evidence_files && c.evidence_files.length > 0 && (
+                                        <div className="mt-2">
+                                            <p><b>Evidence Files:</b></p>
+                                            <ul>
+                                                {c.evidence_files.map((file, index) => (
+                                                    <li key={index}>
+                                                        <a
+                                                            href={`http://localhost:4000/${file.replace("\\", "/")}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-600 underline"
+                                                        >
+                                                            {file.split("\\").pop()}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    {/* Status Section */}
+                                    <div className="mt-4">
+                                        <p><b>Current Status:</b> {c.status}</p>
+
+                                        {/* Status update options */}
+                                        <label className="block mt-2">Update Status:</label>
                                         <select
-                                            className="bg-gray-200 border p-1 rounded"
-                                            value={report.status}
-                                            onChange={(e) => updateStatus(report.id, e.target.value)}
-                                            disabled={loading === report.id}
+                                            className="border p-2 rounded w-full"
+                                            value={status[c.complaint_id] || ""}
+                                            onChange={(e) =>
+                                                setStatus((prev) => ({
+                                                    ...prev,
+                                                    [c.complaint_id]: e.target.value,
+                                                }))
+                                            }
                                         >
-                                            <option value="Pending">Pending</option>
-                                            <option value="Under Investigation">Under Investigation</option>
-                                            <option value="Resolved">Resolved</option>
+                                            <option value="">Select Status</option>
+                                            <option value="Accepted">Accepted</option>
+                                            <option value="Rejected">Rejected</option>
                                             <option value="Closed">Closed</option>
                                         </select>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="6" className="text-center text-gray-600 p-4">
-                                    No crime reports found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+
+                                        <button
+                                            onClick={() => handleStatusUpdate(c.complaint_id)}
+                                            className="mt-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full"
+                                            disabled={loading}
+                                        >
+                                            Update Status
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

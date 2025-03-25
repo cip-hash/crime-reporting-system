@@ -14,10 +14,10 @@ import {
   FiBell,
   FiUser
 } from "react-icons/fi";
-import CrimeHeatmap from "./CrimeHeatmap";
 import ManagePolice from "./ManagePolice";
 import ManageUsers from "./ManageUsers";
 import ViewReports from "./ViewReports";
+import Heatmap from "../admin/AdminHeatmap";
 
 
  
@@ -106,13 +106,13 @@ export default function AdminDashboard() {
                         <p className="text-xs uppercase text-blue-300 font-semibold tracking-wider mb-2 pl-4">Main</p>
                         <Link 
                             to="/admin" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin") && !isActive("/admin/crime-heatmap") && !isActive("/admin/manage-police") && !isActive("/admin/manage-users") && !isActive("/admin/view-reports") ? "bg-blue-700" : ""}`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin") && !isActive("/admin/heatmap") && !isActive("/admin/manage-police") && !isActive("/admin/manage-users") && !isActive("/admin/view-reports") ? "bg-blue-700" : ""}`}
                         >
                             <FiHome /> <span>Dashboard</span>
                         </Link>
                         <Link 
-                            to="/admin/crime-heatmap" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/crime-heatmap")}`}
+                            to="/admin/heatmap" 
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/heatmap")}`}
                         >
                             <FiMap /> <span>Crime Heatmap</span>
                         </Link>
@@ -247,7 +247,7 @@ export default function AdminDashboard() {
                     
                     <div className="bg-white rounded-xl shadow-md p-6 mb-6">
                         <Routes>
-                            <Route path="crime-heatmap" element={<CrimeHeatmap />} />
+                            <Route path="admin/heatmap" element={<Heatmap />} />
                             <Route path="manage-police" element={<ManagePolice />} />
                             <Route path="manage-users" element={<ManageUsers />} />
                             <Route path="view-reports" element={<ViewReports />} />

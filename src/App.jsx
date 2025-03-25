@@ -13,7 +13,10 @@ import UserDashboard from "./dashboards/user/UserDashboard";
 import ReportCrime from "./dashboards/user/ReportCrime";
 import TrackStatus from "./dashboards/user/TrackStatus";
 import MyReports from "./dashboards/user/MyReports";
-import CrimeHeatmap from "./dashboards/police/CrimeHeatmap";
+
+import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
+import AdminHeatmap from "./dashboards/admin/AdminHeatmap";
+//import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
 
 function App() {
   return (
@@ -31,10 +34,11 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/manage-police" element={<ManagePolice />} />
+              <Route path="/admin/heatmap" element={<AdminHeatmap />} />
             </Route>
 
             <Route element={<ProtectedRoute allowedRoles={["police"]} />}>
-              <Route path="/police/heatmap" element={<CrimeHeatmap />} />
+              <Route path="/police/heatmap" element={<PoliceHeatmap />} />
               <Route path="/police/dashboard" element={<PoliceDashboard />} />
             </Route>
 
