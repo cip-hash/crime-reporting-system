@@ -55,4 +55,47 @@ router.delete("/remove/:id", async (req, res) => {
     }
 });
 
+router.get("/get_complaints", async (req, res) => {
+    try {
+        const { district, subdivision } = req.query;
+        console.log("hi",district,subdivision);
+        if (!district || !subdivision) {
+            return res.status(400).json({ error: "District and subdivision are required" });
+        }
+        const query = `SELECT * FROM complaints WHERE district = $1 AND subdivision = $2 ORDER BY date DESC, time DESC;`;
+        const result = await pool.query(query, [district, subdivision]);
+        res.json(result.rows);
+        console.log(result.rows);
+    } catch (error) {
+        console.error("Error fetching complaints:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.put("/update_complaint_status/:complaintId", async (req, res) => {
+    const { complaintId } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+        return res.status(400).json({ error: "Status is required" });
+    }
+
+    try {
+        // Check if complaint exists
+        const complaint = await pool.query("SELECT * FROM complaints WHERE complaint_id = $1", [complaintId]);
+        if (complaint.rows.length === 0) {
+            return res.status(404).json({ error: "Complaint not found" });
+        }
+        // Update the complaint status
+        await pool.query(
+            "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
+            [status, complaintId]
+        );
+        res.json({ message: "Complaint status updated successfully" });
+    } catch (error) {
+        console.error("Error updating complaint status:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 export default router;

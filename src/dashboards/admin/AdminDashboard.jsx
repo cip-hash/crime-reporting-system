@@ -142,12 +142,12 @@ export default function AdminDashboard() {
                         >
                             <FiUsers /> <span>Manage Users</span>
                         </Link>
-                        <Link 
+                        {/* <Link 
                             to="/admin/settings" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/settings")}`}
                         >
                             <FiSettings /> <span>Settings</span>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
                 
@@ -199,18 +199,18 @@ export default function AdminDashboard() {
                                         <p className="font-semibold text-gray-700">Admin</p>
                                         <p className="text-xs text-gray-500">admin123@gmail.com</p>
                                     </div>
-                                    <Link to="/admin/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    {/* <Link to="/admin/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         <div className="flex items-center space-x-2">
                                             <FiUser size={14} />
                                             <span>My Profile</span>
                                         </div>
-                                    </Link>
+                                    </Link> 
                                     <Link to="/admin/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         <div className="flex items-center space-x-2">
                                             <FiSettings size={14} />
                                             <span>Settings</span>
                                         </div>
-                                    </Link>
+                                    </Link>*/}
                                     <div className="border-t my-1"></div>
                                     <button 
                                         onClick={handleLogout}

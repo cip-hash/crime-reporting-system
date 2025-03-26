@@ -3,9 +3,10 @@ import axios from "axios";
 import { Send, FileText, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PoliceHeatmap from "./PoliceHeatmap";
+import PoliceViewComplaint from "./PoliceViewComplaint";
 
 const PoliceDashboard = () => {
-    const [activeTab, setActiveTab] = useState("heatmap"); // Default to heatmap
+    const [activeTab, setActiveTab] = useState("report"); // Default to heatmap
     const [complaints, setComplaints] = useState([]);
     const [selectedComplaintId, setSelectedComplaintId] = useState(null);
     const [status, setStatus] = useState({});
@@ -22,46 +23,27 @@ const PoliceDashboard = () => {
     const policeDistrict = sessionStorage.getItem("policedistrict");
     const policeSubdivision = sessionStorage.getItem("policesubdivision");
 
-    useEffect(() => {
-        fetchComplaints();
-    }, []);
-
-    const fetchComplaints = async () => {
-        if (!policeDistrict || !policeSubdivision) {
-            setError("District or subdivision not found. Please log in again.");
-            return;
-        }
-        try {
-            const response = await axios.get("http://localhost:5000/api/crime/status", {
-                params: { district: policeDistrict, subdivision: policeSubdivision }
-            });
-            setComplaints(response.data);
-        } catch (error) {
-            setError("Failed to fetch complaints. Try again later.");
-        }
-    };
-
-    const handleStatusUpdate = async (complaintId) => {
-        if (!status[complaintId]) {
-            alert("Please select a status before updating.");
-            return;
-        }
-        setLoading(true);
-        try {
-            await axios.patch(`http://localhost:5000/api/crime/update-status/${complaintId}`, { 
-                status: status[complaintId] 
-            });
-            setComplaints((prevComplaints) =>
-                prevComplaints.map((c) =>
-                    c.complaint_id === complaintId ? { ...c, status: status[complaintId] } : c
-                )
-            );
-        } catch (error) {
-            setError("Failed to update status. Try again later.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const handleStatusUpdate = async (complaintId) => {
+    //     if (!status[complaintId]) {
+    //         alert("Please select a status before updating.");
+    //         return;
+    //     }
+    //     setLoading(true);
+    //     try {
+    //         await axios.patch(`http://localhost:5000/api/crime/update-status/${complaintId}`, { 
+    //             status: status[complaintId] 
+    //         });
+    //         setComplaints((prevComplaints) =>
+    //             prevComplaints.map((c) =>
+    //                 c.complaint_id === complaintId ? { ...c, status: status[complaintId] } : c
+    //             )
+    //         );
+    //     } catch (error) {
+    //         setError("Failed to update status. Try again later.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     return (
         <div className="min-h-screen bg-gray-100 p-6 flex">
@@ -109,6 +91,7 @@ const PoliceDashboard = () => {
                     </h2>
                 </div>
                 {error && <p className="text-red-600 font-semibold">{error}</p>}
+                {activeTab === "report" && <PoliceViewComplaint />}
                 {activeTab === "heatmap" && <PoliceHeatmap />}
             </div>
         </div>

@@ -191,68 +191,68 @@ router.get('/track_complaint/', async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   });
-router.get("/status/:policeId", async (req, res) => {
-    const { policeId } = req.params;
+// router.get("/status/:policeId", async (req, res) => {
+//     const { policeId } = req.params;
 
-    try {
-        const roleQuery = `SELECT * FROM police WHERE id = $1`;
-        const roleResult = await pool.query(roleQuery, [policeId]);
+//     try {
+//         const roleQuery = `SELECT * FROM police WHERE id = $1`;
+//         const roleResult = await pool.query(roleQuery, [policeId]);
 
-        if (roleResult.rows.length === 0) {
-            return res.status(404).json({ error: "User not found" });
-        }
+//         if (roleResult.rows.length === 0) {
+//             return res.status(404).json({ error: "User not found" });
+//         }
 
-        //const userRole = roleResult.rows[0].role;
+//         //const userRole = roleResult.rows[0].role;
 
-        let query;
-        let values;
+//         let query;
+//         let values;
 
-        if ( roleResult) {
-            // ✅ Fetch all crime reports for police
-            query = `SELECT id, user_id, incident_type, date, district, subdivision, status FROM complaints`;
-            values = [];
-        } else {
-            // ✅ Fetch only the user's own reports
-            query = `SELECT id, incident_type, date, district, subdivision, status FROM complaints WHERE user_id = $1`;
-            values = [policeId];
-        }
+//         if ( roleResult) {
+//             // ✅ Fetch all crime reports for police
+//             query = `SELECT id, user_id, incident_type, date, district, subdivision, status FROM complaints`;
+//             values = [];
+//         } else {
+//             // ✅ Fetch only the user's own reports
+//             query = `SELECT id, incident_type, date, district, subdivision, status FROM complaints WHERE user_id = $1`;
+//             values = [policeId];
+//         }
 
-        const result = await pool.query(query, values);
+//         const result = await pool.query(query, values);
 
-        res.json(result.rows);
-    } catch (error) {
-        console.error("❌ Error fetching reports:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
+//         res.json(result.rows);
+//     } catch (error) {
+//         console.error("❌ Error fetching reports:", error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+// });
 
-//Complaint status update
-router.patch("/update-status/:id", async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
+// //Complaint status update
+// router.patch("/update-status/:id", async (req, res) => {
+//     const { id } = req.params;
+//     const { status } = req.body;
 
-    const validStatuses = ["Pending", "Under Investigation", "Resolved", "Closed"];
+//     const validStatuses = ["Pending", "Under Investigation", "Resolved", "Closed"];
 
-    if (!validStatuses.includes(status)) {
-        return res.status(400).json({ error: "Invalid status value" });
-    }
+//     if (!validStatuses.includes(status)) {
+//         return res.status(400).json({ error: "Invalid status value" });
+//     }
 
-    try {
-        const result = await pool.query(
-            "UPDATE crime_reports SET status = $1 WHERE id = $2 RETURNING *",
-            [status, id]
-        );
+//     try {
+//         const result = await pool.query(
+//             "UPDATE crime_reports SET status = $1 WHERE id = $2 RETURNING *",
+//             [status, id]
+//         );
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: "Crime report not found" });
-        }
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: "Crime report not found" });
+//         }
 
-        res.json({ message: "Status updated successfully", report: result.rows[0] });
-    } catch (error) {
-        console.error("❌ Error updating status:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
+//         res.json({ message: "Status updated successfully", report: result.rows[0] });
+//     } catch (error) {
+//         console.error("❌ Error updating status:", error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+// });
 
 
 

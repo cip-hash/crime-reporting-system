@@ -92,7 +92,7 @@ const UserDashboard = () => {
                 Report a Crime
               </>
             )}
-            {activeTab === "status" && (
+            {/* {activeTab === "status" && (
               <>
                 <FileText size={20} className="mr-2 text-blue-600" /> 
                 View Crime Status
@@ -103,7 +103,7 @@ const UserDashboard = () => {
                 <Home size={20} className="mr-2 text-blue-600" /> 
                 My Reports
               </>
-            )}
+            )} */}
           </h2>
           
           <div className="flex items-center space-x-4">
