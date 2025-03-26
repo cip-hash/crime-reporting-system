@@ -54,7 +54,7 @@ const UserDashboard = () => {
             <span className="font-medium">View Crime Status</span>
           </button>
           
-          <button
+          {/* <button
             className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
               activeTab === "reports" 
                 ? "bg-gradient-to-r from-blue-700 to-blue-600 shadow-lg border-l-4 border-blue-400" 
@@ -64,14 +64,14 @@ const UserDashboard = () => {
           >
             <Home size={18} className={`mr-3 ${activeTab === "reports" ? "text-blue-300" : ""}`} /> 
             <span className="font-medium">My Reports</span>
-          </button>
+          </button> */}
         </nav>
         
         {/* Footer Navigation */}
         <div className="mt-auto border-t border-blue-700/50 pt-4 space-y-2">
-          <button className="flex items-center p-3 w-full rounded-lg hover:bg-blue-800/40 text-blue-100 transition-all duration-200 group">
+          {/* <button className="flex items-center p-3 w-full rounded-lg hover:bg-blue-800/40 text-blue-100 transition-all duration-200 group">
             <Settings size={18} className="mr-3 group-hover:rotate-45 transition-transform duration-300" /> Settings
-          </button>
+          </button> */}
           <button 
             onClick={handleLogout}
             className="flex items-center p-3 w-full rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-100 transition-all duration-200"
@@ -107,16 +107,16 @@ const UserDashboard = () => {
           </h2>
           
           <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-500 mr-4 hidden md:block">
+            {/* <div className="text-sm text-gray-500 mr-4 hidden md:block">
               Welcome back, User
-            </div>
+            </div> 
             <button className="relative p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-colors duration-200">
               <Bell size={20} />
               <span className="absolute top-1 right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center shadow-sm">0</span>
             </button>
-            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-medium text-sm">
+             <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-medium text-sm">
               U
-            </div>
+            </div> */}
           </div>
         </header>
         
@@ -125,7 +125,7 @@ const UserDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-6 h-full border border-gray-200">
             {activeTab === "report" && <ReportCrime />}
             {activeTab === "status" && <TrackStatus />}
-            {activeTab === "reports" && <MyReports />}
+            {/* {activeTab === "reports" && <MyReports />} */}
           </div>
         </main>
       </div>
