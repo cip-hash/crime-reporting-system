@@ -7,8 +7,6 @@ import AuthProvider from "./context/AuthProvider.jsx"; // ✅ Ensure the correct
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    
-      <App />
-    
+    <App /> 
   </StrictMode>
 );

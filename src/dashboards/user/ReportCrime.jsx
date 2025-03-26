@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 const ReportCrime = () => {
   const [formData, setFormData] = useState({
     incidentType: "",
+    title:"",
     date: "",
     time: "",
     district: "",
@@ -11,9 +11,9 @@ const ReportCrime = () => {
     suspect: "",
     victim: "",
     witness: "",
-    evidence: [],
   });
-
+  const [complaintId, setComplaintId] = useState("");
+  const [evidenceFiles, setEvidenceFiles] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [subdivisions, setSubdivisions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,12 +22,9 @@ const ReportCrime = () => {
   
   //Fetch Logged-in user-id
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Fetch user data
-    if (user) {
-        setLoggedInUser(user);
-    }
+    const user = sessionStorage.getItem("user_email"); // Fetch user data
+    if (user) {setLoggedInUser(user);}
   }, []);
-
   // Fetch districts from backend
   useEffect(() => {
     const fetchDistricts = async () => {
@@ -40,7 +37,6 @@ const ReportCrime = () => {
             console.error("❌ Error fetching districts:", error);
         }
     };
-
     fetchDistricts();
   }, []);
 
@@ -50,7 +46,6 @@ const ReportCrime = () => {
         setSubdivisions([]);
         return;
     }
-
     const fetchSubdivisions = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/crime/subdivisions?district=${formData.district}`);
@@ -61,10 +56,8 @@ const ReportCrime = () => {
             console.error("❌ Error fetching subdivisions:", error);
         }
     };
-
     fetchSubdivisions();
   }, [formData.district]); 
-
   // Set default date and time
   useEffect(() => {
     const today = new Date();
@@ -74,7 +67,6 @@ const ReportCrime = () => {
       time: today.toTimeString().slice(0, 5),
     }));
   }, []);
-
   // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -83,28 +75,45 @@ const ReportCrime = () => {
       [id]: value,
     }));
   };
-
   // Handle file uploads
   const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      evidence: Array.from(e.target.files),
-    }));
+    const file = e.target.files[0];
+    if (file) {
+      setEvidenceFiles((prevFiles) => [...prevFiles, file]);
+    }
+    e.target.value = "";
   };
-
+  const handleFileRemove = (index) => {
+    setEvidenceFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
   //function that work after form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {   
     e.preventDefault();
-
-    console.log("📌 Form Data Before Submission:", formData);
-
+    const formPayload= new FormData();
+    const complaintIdResponse = await fetch("http://localhost:5000/api/crime/generate_complaint_id");
+    const complaintIdGenerated = await complaintIdResponse.json();
+    setComplaintId(complaintIdGenerated.complaintId);
+    formPayload.append("complaintId",complaintIdGenerated.complaintId);
+    formPayload.append("district", formData.district);
+    formPayload.append("subdivision", formData.subdivision);
+    formPayload.append("incidentType", formData.incidentType);
+    formPayload.append("date", formData.date);
+    formPayload.append("time", formData.time);
+    formPayload.append("title", formData.title);
+    formPayload.append("description", formData.description);
+    formPayload.append("suspect", formData.suspect);
+    formPayload.append("victim", formData.victim);
+    formPayload.append("witness", formData.witness);
+    evidenceFiles.forEach((file) => formPayload.append("evidenceFiles", file));
+    formPayload.append("user_email",loggedInUser);
+    console.log("📌 Form Data Before Submission:", formPayload);
     // Ensure userId is available
-    if (!loggedInUser || !loggedInUser.id) {
+    if (!loggedInUser) {
+      console.log(loggedInUser);
         alert("⚠️ User is not logged in. Please log in to submit a report.");
         console.error("❌ Missing user ID");
         return;
     }
-
     // Validate required fields
     if (!formData.incidentType || !formData.date || !formData.time ||
         !formData.district || !formData.subdivision || !formData.description) {
@@ -112,22 +121,17 @@ const ReportCrime = () => {
         console.error("❌ Missing required fields:", formData);
         return;
     }
-
     try {
         // Add userId to the form data
-        const reportData = {
-            ...formData,
-            userId: loggedInUser.id,  // Include user ID
-        };
-
-        console.log("📌 Final Data Sent to Backend:", reportData);
-
+        // const reportData = {
+        //     ...formData,formPayload,
+        //     user_email:loggedInUser,  // Include user ID
+        // };
+        //console.log("📌 Final Data Sent to Backend:", reportData);
         const response = await fetch("http://localhost:5000/api/crime/report", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reportData),
+            //headers: {"Content-Type": "application/json",},
+            body: formPayload,
         });
 
         if (!response.ok) {
@@ -135,13 +139,13 @@ const ReportCrime = () => {
             console.error("❌ Backend Error:", errorResponse);
             throw new Error(`HTTP error! Status: ${response.status} - ${errorResponse.error}`);
         }
-
         console.log("✅ Crime Report Submitted Successfully");
         alert("Crime Report Submitted Successfully!");
 
         // Reset form
         setFormData({
             incidentType: "",
+            title:"",
             date: "",
             time: "",
             district: "",
@@ -150,23 +154,25 @@ const ReportCrime = () => {
             suspect: "",
             victim: "",
             witness: "",
-            evidence: [],
         });
-
+        setEvidenceFiles([]);
     } catch (error) {
         console.error("❌ Error submitting crime report:", error);
         alert("Failed to submit crime report. Check console for details.");
     }
   };
-
   return (
     <div className="max-w-3xl mx-auto">
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-4 rounded-t-lg">
         <h2 className="text-2xl font-bold text-white text-center">Online Crime Report Form</h2>
         <p className="text-blue-100 text-center text-sm mt-1">All information will be kept confidential</p>
       </div>
-
       <div className="bg-white p-6 rounded-b-lg shadow-md border border-gray-200">
+        {complaintId && (
+                  <div className="bg-blue-50">
+                    Complaint submitted successfully! Your Complaint ID: <b>{complaintId}</b>
+                  </div>
+                )}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Incident Information Section */}
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
@@ -175,8 +181,7 @@ const ReportCrime = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Incident Information
-            </h3>
-            
+            </h3>           
             {/* Incident Type */}
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-medium mb-1">
@@ -191,10 +196,13 @@ const ReportCrime = () => {
                   className="block w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
                 >
                   <option value="">Select Incident Type</option>
-                  <option value="Theft">Theft</option>
-                  <option value="Assault">Assault</option>
-                  <option value="Fraud">Fraud</option>
-                  <option value="Harassment">Harassment</option>
+                  <option value="Murder">Murder</option>
+                  <option value="Murder for Gain">Murder for Gain</option>
+                  <option value="Dacoity">Dacoity</option>
+                  <option value="Robbery">Robbery</option>
+                  <option value="Grave Burglary">Grave Burglary</option>
+                  <option value="Grave Theft">Grave </option>
+                  <option value="Other">Other</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -203,19 +211,21 @@ const ReportCrime = () => {
                 </div>
               </div>
             </div>
-
+            {formData.incidentType === "Other" && (
+                        <div className="block w-full px-4 py-2 rounded-lg shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                          <label>Incident Title <span className="text-red-500">*</span></label>
+                          <input type="text" id="title" value={formData.title} onChange={handleChange} required
+                            className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                          />
+                        </div>
+                      )}
             {/* Date & Time */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1">
                   Date <span className="text-red-500">*</span>
                 </label>
-                <input 
-                  type="date" 
-                  id="date" 
-                  value={formData.date} 
-                  onChange={handleChange} 
-                  required 
+                <input type="date" id="date" value={formData.date} onChange={handleChange} required 
                   className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                 />
               </div>
@@ -223,12 +233,7 @@ const ReportCrime = () => {
                 <label className="block text-gray-700 text-sm font-medium mb-1">
                   Time <span className="text-red-500">*</span>
                 </label>
-                <input 
-                  type="time" 
-                  id="time" 
-                  value={formData.time} 
-                  onChange={handleChange} 
-                  required 
+                <input type="time" id="time" value={formData.time} onChange={handleChange} required 
                   className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                 />
               </div>
@@ -329,28 +334,18 @@ const ReportCrime = () => {
               <label className="block text-gray-700 text-sm font-medium mb-1">
                 Description <span className="text-red-500">*</span>
               </label>
-              <textarea 
-                id="description" 
-                value={formData.description} 
-                onChange={handleChange} 
-                required 
+              <textarea id="description" value={formData.description} onChange={handleChange} required 
                 className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-                rows="4"
-                placeholder="Please provide detailed information about the incident..."
+                rows="4" placeholder="Please provide detailed information about the incident..."
               ></textarea>
             </div>
-
             {/* Suspect, Victim, Witness */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1">
                   Suspect Details
                 </label>
-                <input 
-                  type="text" 
-                  id="suspect" 
-                  value={formData.suspect} 
-                  onChange={handleChange} 
+                <input type="text" id="suspect"  value={formData.suspect} onChange={handleChange} 
                   className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                   placeholder="Description of suspect(s) if any"
                 />
@@ -359,11 +354,7 @@ const ReportCrime = () => {
                 <label className="block text-gray-700 text-sm font-medium mb-1">
                   Victim Details
                 </label>
-                <input 
-                  type="text" 
-                  id="victim" 
-                  value={formData.victim} 
-                  onChange={handleChange} 
+                <input  type="text"  id="victim"  value={formData.victim} onChange={handleChange} 
                   className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                   placeholder="Details of victim(s) if different from reporter"
                 />
@@ -374,18 +365,14 @@ const ReportCrime = () => {
               <label className="block text-gray-700 text-sm font-medium mb-1">
                 Witness Details
               </label>
-              <input 
-                type="text" 
-                id="witness" 
-                value={formData.witness} 
-                onChange={handleChange} 
+              <input  type="text" id="witness" value={formData.witness} onChange={handleChange} 
                 className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                 placeholder="Information about any witnesses"
               />
             </div>
           </div>
 
-          {/* Evidence Upload */}
+          {/* Evidence Upload
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
             <h3 className="text-lg font-semibold text-blue-800 mb-4 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -427,6 +414,28 @@ const ReportCrime = () => {
                 </div>
               )}
             </div>
+          </div> */}
+          <div className="flex flex-col space-y-2">
+            <label className="font-semibold text-gray-700">Upload Evidence</label>
+  
+              <input type="file" id="hidden-file-input" onChange={handleFileChange} accept="image/*,video/*,application/pdf" className="hidden"/>
+              <button type="button"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+                onClick={() => document.getElementById('hidden-file-input').click()}
+              >Add File</button>
+
+              {evidenceFiles.length > 0 && (
+                  <ul className="mt-2 space-y-2">
+                  {evidenceFiles.map((file, index) => (
+                  <li key={index} className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-md">
+                  <span className="text-gray-700">{file.name}</span>
+                  <button type="button"
+                    className="bg-red-500 text-white px-2 py-1 text-sm rounded hover:bg-red-600 transition duration-200"
+                    onClick={() => handleFileRemove(index)}>Remove</button>
+                  </li>
+                ))}
+                </ul>
+              )}
           </div>
 
           {/* Submit Button */}

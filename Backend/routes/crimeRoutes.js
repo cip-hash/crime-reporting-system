@@ -1,11 +1,45 @@
-import express from "express"; 
+import express from "express";
 import pool from "../config/db.js"; // Ensure correct DB config path
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Files will be stored in "uploads" folder
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname); // Unique filename
+  }
+});
+
+// Set up file filter (optional) for file types
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'video/mp4', 'application/pdf'];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Unsupported file type.'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 const router = express.Router();
-
 // Middleware to parse JSON requests
 router.use(express.json());
-
+router.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 /**
  * ✅ Fetch all districts from `crime_statistics` table
  */
@@ -51,53 +85,74 @@ router.get("/subdivisions", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
+router.get('/generate_complaint_id', async (req, res) => {
+    try {
+      const { rows } = await pool.query('SELECT complaint_id FROM complaints ORDER BY complaint_id DESC LIMIT 1');
+  
+      let newIdNumber = 1; // default for first entry
+      if (rows.length > 0) {
+        const lastId = rows[0].complaint_id; // Example: CMP0000000123
+        const lastNumber = parseInt(lastId.substring(3), 10); // Extract number part
+        newIdNumber = lastNumber + 1;
+      }
+      const newComplaintId = 'CMP' + String(newIdNumber).padStart(10, '0'); // CMP0000000124
+      res.json({ complaintId: newComplaintId });
+    } catch (error) {
+      console.error('Error generating complaint ID:', error);
+      res.status(500).json({ error: 'Failed to generate complaint ID' });
+    }
+  });
+  
 /**
  * ✅ Submit a Crime Report (Insert into Database)
  */
-router.post("/report", async (req, res) => {
+router.post("/report", upload.array('evidenceFiles', 5),async (req, res) => {
     console.log("📌 Received Crime Report Data:", req.body);
 
     const {
-        userId, // Add userId
+        user_email,
+        complaintId,
         incidentType,
         date,
         time,
         district,
         subdivision,
+        title,
         description,
         suspect,
         victim,
-        witness,
-        evidence
+        witness
     } = req.body;
-
-    if (!userId || !incidentType || !date || !time || !district || !subdivision || !description) {
+    const evidencePaths = req.files ? req.files.map(file => file.path) : [];
+    console.log(user_email);
+    if (!user_email || !incidentType || !date || !time || !district || !subdivision || !description) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
     try {
         const insertQuery = `
-            INSERT INTO crime_reports (
-                user_id, incident_type, date, time, district, subdivision, description,
-                suspect, victim, witness, evidence, status
+            INSERT INTO complaints (
+                complainant_email,complaint_id, incident_type,title, date, time, district, subdivision, description,
+                suspect_details, victim_details, witness_details,evidence_files
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'Pending')
-            RETURNING id, created_at, status;
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING complaint_id,complainant_email, created_at,status;
         `;
 
         const result = await pool.query(insertQuery, [
-            userId, // Include userId
+            user_email, // Include userId
+            complaintId,
             incidentType,
+            title,
             date,
             time,
             district,
             subdivision,
             description,
-            suspect || null,
-            victim || null,
-            witness || null,
-            evidence ? evidence : null,
+            suspect,
+            victim,
+            witness,
+            JSON.stringify(evidencePaths)
         ]);
 
         console.log("✅ Crime report inserted:", result.rows[0]);
@@ -116,6 +171,26 @@ router.post("/report", async (req, res) => {
 /**
  * ✅ Fetch Crime Reports
  */
+router.get('/track_complaint/', async (req, res) => {
+    const { complaintId,user_email } = req.query;
+  
+    try {
+      // Query the complaint with the given ID
+      const result = await pool.query('SELECT * FROM complaints WHERE complaint_id = $1 and complainant_email= $2', [complaintId,user_email]);
+      console.log("complaintId:",complaintId);
+      // Check if complaint exists
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: 'Complaint not found' });
+      }
+  
+      // Send the complaint data
+      res.json(result.rows[0]);
+      console.log("res:",result.rows[0]);
+    } catch (err) {
+      console.error('Error fetching complaint:', err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
 router.get("/status/:policeId", async (req, res) => {
     const { policeId } = req.params;
 

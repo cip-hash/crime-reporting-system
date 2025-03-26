@@ -25,6 +25,10 @@ const Login = () => {
             // Store authentication details in session storage
             sessionStorage.setItem("authToken", response.token);
             sessionStorage.setItem("userRole", response.user.role);
+            if(response.user.role=="user"){
+                sessionStorage.setItem("user_email",response.user.email);
+                console.log("success in email");
+            }
             if (response.user.role === "police") {
                 sessionStorage.setItem("policedistrict", response.user.district);
                 sessionStorage.setItem("policesubdivision", response.user.subdivision);
