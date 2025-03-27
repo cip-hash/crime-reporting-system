@@ -201,7 +201,7 @@ const ReportCrime = () => {
                   <option value="Dacoity">Dacoity</option>
                   <option value="Robbery">Robbery</option>
                   <option value="Grave Burglary">Grave Burglary</option>
-                  <option value="Grave Theft">Grave </option>
+                  <option value="Grave Theft">Grave Theft</option>
                   <option value="Other">Other</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

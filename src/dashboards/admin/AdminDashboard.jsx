@@ -17,7 +17,7 @@ import {
 import ManagePolice from "./ManagePolice";
 import ManageUsers from "./ManageUsers";
 import ViewReports from "./ViewReports";
-import Heatmap from "../admin/AdminHeatmap";
+import AdminHeatmap from "../admin/AdminHeatmap";
 
 
  
@@ -26,6 +26,7 @@ import Heatmap from "../admin/AdminHeatmap";
 export default function AdminDashboard() {
   
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [activeTab, setActiveTab] = useState("dashboard");
     const [profileOpen, setProfileOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
@@ -104,18 +105,19 @@ export default function AdminDashboard() {
                     
                     <div className="space-y-1">
                         <p className="text-xs uppercase text-blue-300 font-semibold tracking-wider mb-2 pl-4">Main</p>
-                        <Link 
+                        <button 
                             to="/admin" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin") && !isActive("/admin/heatmap") && !isActive("/admin/manage-police") && !isActive("/admin/manage-users") && !isActive("/admin/view-reports") ? "bg-blue-700" : ""}`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200${activeTab === 'dashboard' ? 'bg-blue-700' : 'hover:bg-blue-700'}`}
+                            onClick={() => setActiveTab("dashboard")}   
+                            //  ${isActive("/admin") && !isActive("/admin/heatmap") && !isActive("/admin/manage-police") && !isActive("/admin/manage-users") && !isActive("/admin/view-reports") ? "bg-blue-700" : ""}`}
                         >
                             <FiHome /> <span>Dashboard</span>
-                        </Link>
-                        <Link 
-                            to="/admin/heatmap" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/heatmap")}`}
-                        >
-                            <FiMap /> <span>Crime Heatmap</span>
-                        </Link>
+                        </button>
+                        <button 
+                       className={`flex items-center px-4 py-3 w-full rounded-lg ${activeTab === 'heatmap' ? 'bg-blue-700' : 'hover:bg-blue-700'}`} 
+                       onClick={() => setActiveTab("heatmap")}>
+                       <FiMap className="mr-3" /> Crime Heatmap
+                   </button>
                         <Link 
                             to="/admin/view-reports" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/view-reports")}`}
@@ -130,12 +132,11 @@ export default function AdminDashboard() {
                         </Link>
                         
                         <p className="text-xs uppercase text-blue-300 font-semibold tracking-wider mt-6 mb-2 pl-4">Administration</p>
-                        <Link 
-                            to="/admin/manage-police" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/manage-police")}`}
-                        >
-                            <FiShield /> <span>Manage Police</span>
-                        </Link>
+                        <button 
+                       className={`flex items-center px-4 py-3 w-full rounded-lg ${activeTab === 'managePolice' ? 'bg-blue-700' : 'hover:bg-blue-700'}`} 
+                       onClick={() => setActiveTab("managePolice")}>
+                       <FiShield className="mr-3" /> Manage Police
+                   </button>
                         <Link 
                             to="/admin/manage-users" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/manage-users")}`}
@@ -230,31 +231,32 @@ export default function AdminDashboard() {
                 <main className="p-6">
                     {/* Dashboard stats */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        {stats.map((stat, index) => (
-                            <div key={index} className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
-                                        <p className="text-2xl font-bold text-gray-700 mt-1">{stat.value}</p>
-                                    </div>
-                                    <div className="bg-gray-100 p-3 rounded-full">
-                                        {stat.icon}
-                                    </div>
+                    
+                    {stats.map((stat, index) => (
+                        <div key={index} className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
+                                    <p className="text-2xl font-bold text-gray-700 mt-1">{stat.value}</p>
+                                </div>
+                                <div className="bg-gray-100 p-3 rounded-full">
+                                    {stat.icon}
                                 </div>
                             </div>
-                        ))}
+                        </div>
+                    ))}
                     </div>
                     
                     <div className="bg-white rounded-xl shadow-md p-6 mb-6">
                         <Routes>
-                            <Route path="admin/heatmap" element={<Heatmap />} />
+                            <Route path="admin/heatmap" element={<AdminHeatmap />} />
                             <Route path="manage-police" element={<ManagePolice />} />
                             <Route path="manage-users" element={<ManageUsers />} />
                             <Route path="view-reports" element={<ViewReports />} />
                             <Route path="*" element={
                                 <div className="text-center py-10">
-                                    <h2 className="text-2xl font-bold text-gray-700">Welcome to Admin Dashboard</h2>
-                                    <p className="text-gray-500 mt-2">Select an option from the sidebar to get started</p>
+                                    
+                                    {activeTab === "dashboard" ?<h2 className="text-2xl font-bold text-gray-700">Welcome to Admin Dashboard</h2>:activeTab==="heatmap"? <AdminHeatmap /> : <ManagePolice />}
                                 </div>
                             } />
                         </Routes>
@@ -264,3 +266,69 @@ export default function AdminDashboard() {
         </div>
     );
 }
+// import { useState, useEffect } from "react";
+// import { FiMap, FiShield, FiMenu, FiX, FiLogOut } from "react-icons/fi";
+// import AdminHeatmap from "../admin/AdminHeatmap";
+// import ManagePolice from "./ManagePolice";
+
+// export default function AdminDashboard() {
+//     const [sidebarOpen, setSidebarOpen] = useState(true);
+//     const [activeTab, setActiveTab] = useState("heatmap");
+//     const [userCount, setUserCount] = useState(0);
+
+//     useEffect(() => {
+//         const fetchUserCount = async () => {
+//             try {
+//                 const response = await fetch("http://localhost:5000/api/admin/user-count");
+//                 const data = await response.json();
+//                 if (response.ok) {
+//                     setUserCount(Number(data.userCount));
+//                 } else {
+//                     console.error("Failed to fetch user count:", data.error);
+//                 }
+//             } catch (error) {
+//                 console.error("Error fetching user count:", error);
+//             }
+//         };
+//         fetchUserCount();
+//     }, []);
+
+//     return (
+//         <div className="flex h-screen bg-gray-50">
+//             {/* Sidebar */}
+//             <div className={`w-64 bg-blue-900 text-white fixed md:relative h-full z-10 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+//                 <div className="p-5 flex justify-between">
+//                     <h1 className="text-2xl font-bold">Admin Portal</h1>
+//                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden text-white">
+//                         {sidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+//                     </button>
+//                 </div>
+//                 <nav className="p-4 space-y-4">
+//                     <button 
+//                         className={`flex items-center px-4 py-3 w-full rounded-lg ${activeTab === 'heatmap' ? 'bg-blue-700' : 'hover:bg-blue-700'}`} 
+//                         onClick={() => setActiveTab("heatmap")}>
+//                         <FiMap className="mr-3" /> Crime Heatmap
+//                     </button>
+//                     <button 
+//                         className={`flex items-center px-4 py-3 w-full rounded-lg ${activeTab === 'managePolice' ? 'bg-blue-700' : 'hover:bg-blue-700'}`} 
+//                         onClick={() => setActiveTab("managePolice")}>
+//                         <FiShield className="mr-3" /> Manage Police
+//                     </button>
+//                 </nav>
+//                 <div className="p-4 mt-auto border-t border-blue-700">
+//                     <button className="w-full flex items-center justify-center space-x-2 bg-blue-700 hover:bg-blue-600 py-2 px-4 rounded-lg">
+//                         <FiLogOut size={18} /> <span>Logout</span>
+//                     </button>
+//                 </div>
+//             </div>
+            
+//             {/* Main Content */}
+//             <div className="flex-1 overflow-auto p-6">
+//                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Admin Dashboard</h2>
+//                 <div className="bg-white p-6 rounded-lg shadow">
+//                     {activeTab === "heatmap" ? <AdminHeatmap /> : <ManagePolice />}
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// }

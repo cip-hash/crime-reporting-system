@@ -23,28 +23,6 @@ const PoliceDashboard = () => {
     const policeDistrict = sessionStorage.getItem("policedistrict");
     const policeSubdivision = sessionStorage.getItem("policesubdivision");
 
-    // const handleStatusUpdate = async (complaintId) => {
-    //     if (!status[complaintId]) {
-    //         alert("Please select a status before updating.");
-    //         return;
-    //     }
-    //     setLoading(true);
-    //     try {
-    //         await axios.patch(`http://localhost:5000/api/crime/update-status/${complaintId}`, { 
-    //             status: status[complaintId] 
-    //         });
-    //         setComplaints((prevComplaints) =>
-    //             prevComplaints.map((c) =>
-    //                 c.complaint_id === complaintId ? { ...c, status: status[complaintId] } : c
-    //             )
-    //         );
-    //     } catch (error) {
-    //         setError("Failed to update status. Try again later.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     return (
         <div className="min-h-screen bg-gray-100 p-6 flex">
             <div className="w-72 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white p-6 flex flex-col shadow-xl">
