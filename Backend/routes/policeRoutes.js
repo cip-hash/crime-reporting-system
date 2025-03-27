@@ -90,7 +90,6 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
         if (complaintResult.rows.length === 0) {
             return res.status(404).json({ error: "Complaint not found" });
         }
-
         const complaint = complaintResult.rows[0];
         const subdivision = complaint.subdivision;
         const crime_type=complaint.incident_type; // Extract subdivision & crime_type from complaint
