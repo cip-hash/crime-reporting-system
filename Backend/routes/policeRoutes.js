@@ -94,7 +94,6 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
         const complaint = complaintResult.rows[0];
         const subdivision = complaint.subdivision;
         const crime_type=complaint.incident_type; // Extract subdivision & crime_type from complaint
-        console.log("complaint",subdivision,crime_type);
         // Update the complaint status
         await pool.query(
             "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
@@ -103,7 +102,7 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
         console.log(status.toLowerCase());
         // If complaint is accepted, update crime_statistics
         if (status.toLowerCase() === "under investigation") {
-            console.log("hello");
+            
             const updateCrimeQuery = `
                 UPDATE crime_statistics
                 SET ${crime_type} = ${crime_type} + 1
