@@ -18,9 +18,11 @@ const ManagePolice = () => {
 
     const fetchPoliceList = async () => {
         setLoading(true);
+        
         try {
             const response = await axios.get("http://localhost:5000/api/police");
             setPoliceList(Array.isArray(response.data) ? response.data : []);
+            console.log("response:",response.data,"\npolicelist:",policeList);
         } catch (error) {
             console.error("Error fetching police list", error);
             setPoliceList([]);
@@ -198,6 +200,68 @@ const ManagePolice = () => {
                     </form>
                 </div>
             )}
+             <h2 className="text-lg font-medium mb-3">Police Officers List</h2>
+
+{loading ? (
+    <div className="flex justify-center py-10">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+) : (
+    <div className="overflow-x-auto border border-gray-200 rounded">
+        <table className="min-w-full">
+            <thead className="bg-gray-50">
+                <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">NAME</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">EMAIL</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">STATUS</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+                {filteredPoliceList.length > 0 ? (
+                    filteredPoliceList.map((police) => (
+                        <tr key={police.id}>
+                            <td className="px-4 py-3 text-sm text-gray-500">{police.id}</td>
+                            <td className="px-4 py-3">
+                                <div className="flex items-center">
+                                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-medium mr-3">
+                                        {police.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div className="font-medium">{police.name}</div>
+                                        <div className="text-xs text-gray-500">Officer</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td className="px-4 py-3 text-sm">{police.email}</td>
+                            <td className="px-4 py-3">
+                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                    Active
+                                </span>
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                                <button 
+                                    onClick={() => handleRemovePolice(police.id, police.name)}
+                                    className="text-red-600 hover:text-red-800"
+                                    title="Delete"
+                                >
+                                    <FiTrash2 />
+                                </button>
+                            </td>
+                        </tr>
+                    ))
+                ) : (
+                    <tr>
+                        <td colSpan="5" className="px-4 py-10 text-center text-gray-500">
+                            {searchTerm ? "No officers match your search criteria." : "No police officers found."}
+                        </td>
+                    </tr>
+                )}
+            </tbody>
+        </table>
+    </div>
+)}
         </div>
     );
 };

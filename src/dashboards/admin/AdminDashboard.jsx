@@ -118,7 +118,7 @@ export default function AdminDashboard() {
                        onClick={() => setActiveTab("heatmap")}>
                        <FiMap className="mr-3" /> Crime Heatmap
                    </button>
-                        <Link 
+                        {/* <Link 
                             to="/admin/view-reports" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/view-reports")}`}
                         >
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/statistics")}`}
                         >
                             <FiBarChart2 /> <span>Statistics</span>
-                        </Link>
+                        </Link> */}
                         
                         <p className="text-xs uppercase text-blue-300 font-semibold tracking-wider mt-6 mb-2 pl-4">Administration</p>
                         <button 
@@ -137,12 +137,12 @@ export default function AdminDashboard() {
                        onClick={() => setActiveTab("managePolice")}>
                        <FiShield className="mr-3" /> Manage Police
                    </button>
-                        <Link 
+                        {/* <Link 
                             to="/admin/manage-users" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/manage-users")}`}
                         >
                             <FiUsers /> <span>Manage Users</span>
-                        </Link>
+                        </Link> */}
                         {/* <Link 
                             to="/admin/settings" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/settings")}`}

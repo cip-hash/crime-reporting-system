@@ -7,7 +7,7 @@ const router = express.Router();
 // ✅ Get all police officers from the database
 router.get("/", async (req, res) => {
     try {
-        const result = await pool.query("SELECT id, name, email FROM users WHERE role = 'police'");
+        const result = await pool.query("SELECT id, name, email FROM police");
         res.json(result.rows);
     } catch (error) {
         console.error("Error fetching police list:", error);
