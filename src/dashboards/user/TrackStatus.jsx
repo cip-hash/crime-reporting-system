@@ -76,7 +76,7 @@ const TrackStatus = () => {
               <ul className="list-disc ml-6">
                 {complaintData.evidence_files.map((file, index) => (
                   <li key={index}>
-                    <a href={`http://localhost:5000/${file}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                    <a href={`http://localhost:5173/backend/${file}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                       {file.split("\\").pop()}
                     </a>
                   </li>
