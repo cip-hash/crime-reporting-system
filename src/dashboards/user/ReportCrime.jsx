@@ -196,6 +196,7 @@ const ReportCrime = () => {
                   className="block w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors"
                 >
                   <option value="">Select Incident Type</option>
+                  <option value="Harassment">Harassment</option>
                   <option value="Murder">Murder</option>
                   <option value="Murder for Gain">Murder for Gain</option>
                   <option value="Dacoity">Dacoity</option>

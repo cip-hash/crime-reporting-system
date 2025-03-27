@@ -112,6 +112,9 @@ const PoliceViewComplaint = () => {
                   <p><b>District:</b> {c.district}</p>
                   <p><b>Subdivision:</b> {c.subdivision}</p>
                   <p><b>Description:</b> {c.description}</p>
+                  {c.suspect_details && <p><b>Suspect:</b> {c.suspect_details}</p>}
+                  {c.victim_details && <p><b>Victim:</b> {c.victim_details}</p>}
+                  {c.witness_details && <p><b>Witness:</b> {c.witness_details}</p>}
                   {c.evidence_files && c.evidence_files.length > 0 && (
                     <div className="mt-2">
                       <p className="font-semibold">Evidence Files:</p>

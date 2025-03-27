@@ -64,8 +64,14 @@ router.get("/get_complaints", async (req, res) => {
         }
         const query = `SELECT * FROM complaints WHERE district = $1 AND subdivision = $2 ORDER BY date DESC, time DESC;`;
         const result = await pool.query(query, [district, subdivision]);
+        for(let i=0;i<result.rows.length;i++){
+            if(result.rows[i].incident_type=='Harassment' && result.rows[i].status=='Pending'){
+                result.rows[i].victim_details="";
+                result.rows[i].suspect_details="";
+            }
+        }
         res.json(result.rows);
-        // console.log(result.rows);
+         console.log(result.rows[0]);
     } catch (error) {
         console.error("Error fetching complaints:", error);
         res.status(500).json({ error: "Internal Server Error" });
