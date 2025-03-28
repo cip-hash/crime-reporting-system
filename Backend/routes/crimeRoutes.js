@@ -283,8 +283,8 @@ router.get("/stats", async (req, res) => {
  */
 router.get("/locations", async (req, res) => {
     try {
-        const result = await pool.query("SELECT district,subdivision,latitude, longitude FROM crime_statistics WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
-
+        const result = await pool.query("SELECT * FROM crime_statistics WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
+        console.log(result.rows);
         res.json(result.rows);
     } catch (error) {
         console.error("❌ Error fetching crime locations:", error);
