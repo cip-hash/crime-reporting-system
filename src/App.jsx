@@ -16,6 +16,7 @@ import MyReports from "./dashboards/user/MyReports";
 
 import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
 import AdminHeatmap from "./dashboards/admin/AdminHeatmap";
+import Sos from "./dashboards/user/Sos";
 //import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
               <Route path="/user/report-crime" element={<ReportCrime />} />
               <Route path="/user/track-status" element={<TrackStatus />} />
               <Route path="/user/my-reports" element={<MyReports />} />
+              <Route path="/user/sos" element={<Sos/>} />
             </Route>
           </Routes>
         </div>

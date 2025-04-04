@@ -7,9 +7,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/'); // Files will be stored in "uploads" folder
@@ -284,7 +281,7 @@ router.get("/stats", async (req, res) => {
 router.get("/locations", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM crime_statistics WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
-        console.log(result.rows);
+       // console.log(result.rows);
         res.json(result.rows);
     } catch (error) {
         console.error("❌ Error fetching crime locations:", error);
@@ -305,12 +302,98 @@ router.post("/latlong", async (req, res) => {
             return res.status(404).json({ error: "No location found for given district & subdivision" });
         }
 
-        console.log("📍 Location Found:", result.rows[0]);
+        //console.log("📍 Location Found:", result.rows[0]);
         res.json(result.rows[0]);  // Return latitude & longitude
-        console.log(result.rows[0]);
     } catch (error) {
         console.error("❌ Error fetching lat/lon for:", dis, sub);
         res.status(500).json({ error: "Database error" });
+    }
+});
+
+const findNearestPolice = async (lat, lng) => {
+    const query = `
+        SELECT id, subdivision
+        FROM police
+        ORDER BY ST_Distance(ST_SetSRID(ST_Point($1, $2), 4326), coordinates) 
+        LIMIT 1;
+    `;
+    const result = await pool.query(query, [lng, lat]);
+    return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+// ✅ API to send SOS alert
+router.post("/sos", async (req, res) => {
+    const { user_email, latitude, longitude } = req.body;
+    try {
+        const policeStation = await findNearestPolice(latitude, longitude);
+        if (!policeStation) {
+            return res.status(404).json({ message: "No nearby police station found." });
+        }
+
+        const locationData = JSON.stringify({ latitude, longitude, timestamp: new Date().toISOString() });
+
+        const insertQuery = `
+            INSERT INTO sos_alerts (user_email, locations, police_subdivision, status)
+            VALUES ($1, ARRAY[$2::jsonb], $3, 'active') 
+            RETURNING id;
+        `;
+        const newSOS = await pool.query(insertQuery, [user_email, locationData, policeStation.subdivision]);
+        console.log("creation:",newSOS.rows[0].id);
+        res.json({ message: "SOS Alert Sent!", sos_id: newSOS.rows[0].id });
+    } catch (error) {
+        console.error("Error creating SOS:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// ✅ API to append new location updates
+router.put("/sos/:user_email", async (req, res) => {
+    const { latitude, longitude } = req.body;
+    const { user_email } = req.params;
+
+    try {
+        const newLocation = JSON.stringify({ latitude, longitude, timestamp: new Date().toISOString() });
+
+        const updateQuery = `
+            UPDATE sos_alerts 
+            SET locations = locations || $1::jsonb
+            WHERE user_email = $2 AND status = 'active'
+            RETURNING id;
+        `;
+        const updatedSOS = await pool.query(updateQuery, [newLocation, user_email]);
+        console.log("updated:",user_email);
+        if (updatedSOS.rowCount === 0) {
+            return res.status(404).json({ error: "Active SOS not found." });
+        }
+
+        res.json({ message: "SOS Location Updated" });
+    } catch (error) {
+        console.error("Error updating SOS:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// ✅ API to stop SOS alert
+router.put("/sos/:sosId/stop", async (req, res) => {
+    const { sosId } = req.params;
+
+    try {
+        const updateQuery = `
+            UPDATE sos_alerts 
+            SET status = 'inactive'
+            WHERE id = $1 AND status = 'active'
+            RETURNING id;
+        `;
+        const updatedSOS = await pool.query(updateQuery, [sosId]);
+        console.log("stopped:",sosId);
+        if (updatedSOS.rowCount === 0) {
+            return res.status(404).json({ error: "Active SOS not found." });
+        }
+
+        res.json({ message: "SOS Stopped" });
+    } catch (error) {
+        console.error("Error stopping SOS:", error);
+        res.status(500).json({ error: "Server error" });
     }
 });
 

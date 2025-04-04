@@ -123,5 +123,31 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
     }
 });
 
+// ✅ Fetch SOS Alerts for a Subdivision
+router.get("/sos", async (req, res) => {
+    const { subdivision } = req.query;
+
+    if (!subdivision) {
+        return res.status(400).json({ message: "❌ Subdivision is required" });
+    }
+
+    try {
+        const query = `
+            SELECT id, user_email, status, locations, created_at
+            FROM sos_alerts
+            WHERE police_subdivision = $1
+            ORDER BY created_at DESC;
+        `;
+
+        const { rows } = await pool.query(query, [subdivision]);
+
+        return res.json(rows);
+    } catch (error) {
+        console.error("🔥 Error fetching SOS alerts:", error);
+        res.status(500).json({ message: "🔥 Internal Server Error" });
+    }
+});
+
+
 
 export default router;

@@ -79,7 +79,7 @@ const ManagePolice = () => {
     const handleRemovePolice = async (id, name) => {
         if (window.confirm(`Are you sure you want to remove ${name}?`)) {
             try {
-                await axios.delete(`http://localhost:5000/api/police/remove/${id}`);
+                await axios.delete(`http://localhost:5000/api/admin/remove-police/${id}`);
                 fetchPoliceList();
             } catch (error) {
                 console.error("Error removing police", error);

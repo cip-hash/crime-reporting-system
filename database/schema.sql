@@ -62,6 +62,53 @@ CREATE TABLE users (
     
 );
 
+--sos
+CREATE TABLE sos_alerts (
+    id SERIAL PRIMARY KEY,
+    user_email VARCHAR(100) NOT NULL,
+    locations JSONB[] NOT NULL, -- Stores an array of location objects
+    police_subdivision VARCHAR(50) NOT NULL,
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE EXTENSION postgis;
+SELECT postgis_version();
+ALTER TABLE police ADD COLUMN coordinates geometry(Point, 4326);
+
+CREATE OR REPLACE FUNCTION set_police_coordinates()
+RETURNS TRIGGER AS $$
+DECLARE
+    crime_latitude NUMERIC;
+    crime_longitude NUMERIC;
+BEGIN
+    -- Fetch latitude and longitude from crime_statistics based on subdivision
+    SELECT latitude, longitude 
+    INTO crime_latitude, crime_longitude
+    FROM crime_statistics 
+    WHERE subdivision = NEW.subdivision
+    LIMIT 1;
+
+    -- If no matching subdivision is found, raise an error or set NULL
+    IF crime_latitude IS NULL OR crime_longitude IS NULL THEN
+        RAISE EXCEPTION 'No matching subdivision found in crime_statistics';
+    ELSE
+        -- Set coordinates in police table
+        NEW.coordinates := ST_SetSRID(ST_MakePoint(crime_longitude, crime_latitude), 4326);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_set_police_coordinates
+BEFORE INSERT OR UPDATE ON police
+FOR EACH ROW EXECUTE FUNCTION set_police_coordinates();
+
+CREATE INDEX idx_police_coordinates ON police USING GIST (coordinates);
+select * from police;
+
+
 --updated lat,long
 update crime_statistics set latitude=10.779333,longitude=78.715782 where subdivision like 'Golden%';
 update crime_statistics set latitude=12.498351,longitude=78.560196 where subdivision='Tirupathur';

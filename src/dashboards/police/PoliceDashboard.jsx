@@ -4,6 +4,7 @@ import { Send, FileText, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PoliceHeatmap from "./PoliceHeatmap";
 import PoliceViewComplaint from "./PoliceViewComplaint";
+import PoliceSos from "./PoliceSos";
 
 const PoliceDashboard = () => {
     const [activeTab, setActiveTab] = useState("report"); // Default to heatmap
@@ -51,6 +52,14 @@ const PoliceDashboard = () => {
                     >
                         <FileText size={18} className="mr-3" /> View Heatmap
                     </button>
+                    <button
+                        className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
+                            activeTab === "sos" ? "bg-blue-700 shadow-lg border-l-4 border-blue-400" : "hover:bg-blue-800/50"
+                        }`}
+                        onClick={() => setActiveTab("sos")}
+                    >
+                        <FileText size={18} className="mr-3" /> Sos Alert
+                    </button>
                 </nav>
                 <div className="mt-auto border-t border-blue-700/50 pt-4">
                     <button 
@@ -71,6 +80,7 @@ const PoliceDashboard = () => {
                 {error && <p className="text-red-600 font-semibold">{error}</p>}
                 {activeTab === "report" && <PoliceViewComplaint />}
                 {activeTab === "heatmap" && <PoliceHeatmap />}
+                {activeTab === "sos" && <PoliceSos/>}
             </div>
         </div>
     );

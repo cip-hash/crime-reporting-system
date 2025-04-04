@@ -4,6 +4,7 @@ import { Home, FileText, Send, Bell, LogOut, Settings, Shield } from "lucide-rea
 import ReportCrime from "./ReportCrime";
 import TrackStatus from "./TrackStatus";
 import MyReports from "./MyReports";
+import Sos from "./Sos";
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("report");
@@ -54,6 +55,17 @@ const UserDashboard = () => {
             <span className="font-medium">View Crime Status</span>
           </button>
           
+          <button
+            className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
+              activeTab === "sos" 
+                ? "bg-gradient-to-r from-blue-700 to-blue-600 shadow-lg border-l-4 border-blue-400" 
+                : "hover:bg-blue-800/50 text-blue-100"
+            }`}
+            onClick={() => setActiveTab("sos")}
+          >
+            <FileText size={18} className={`mr-3 ${activeTab === "sos" ? "text-blue-300" : ""}`} /> 
+            <span className="font-medium">SOS</span>
+          </button>
           {/* <button
             className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
               activeTab === "reports" 
@@ -125,6 +137,7 @@ const UserDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-6 h-full border border-gray-200">
             {activeTab === "report" && <ReportCrime />}
             {activeTab === "status" && <TrackStatus />}
+            {activeTab === "sos" && <Sos/>}
             {/* {activeTab === "reports" && <MyReports />} */}
           </div>
         </main>
