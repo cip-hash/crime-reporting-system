@@ -16,7 +16,7 @@ import MyReports from "./dashboards/user/MyReports";
 
 import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
 import AdminHeatmap from "./dashboards/admin/AdminHeatmap";
-//import PoliceHeatmap from "./dashboards/police/PoliceHeatmap";
+import SuspectFinder from './dashboards/police/SuspectFinder';
 
 function App() {
   return (
@@ -40,6 +40,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["police"]} />}>
               <Route path="/police/heatmap" element={<PoliceHeatmap />} />
               <Route path="/police/dashboard" element={<PoliceDashboard />} />
+              <Route path="/police/suspect-finder" element={<SuspectFinder />} />
             </Route>
 
 

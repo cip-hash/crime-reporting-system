@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import pool from "../config/db.js"; // Ensure database connection is properly imported
+import fs from "fs";
+import csv from "csv-parser";
 
 const router = express.Router();
 
@@ -58,25 +60,40 @@ router.delete("/remove/:id", async (req, res) => {
 router.get("/get_complaints", async (req, res) => {
     try {
         const { district, subdivision } = req.query;
-        // console.log("hi",district,subdivision);
+
         if (!district || !subdivision) {
             return res.status(400).json({ error: "District and subdivision are required" });
         }
-        const query = `SELECT * FROM complaints WHERE district = $1 AND subdivision = $2 ORDER BY date DESC, time DESC;`;
+
+        const query = `
+            SELECT complaint_id, title, description, incident_type, date, time, district, subdivision, status 
+            FROM complaints 
+            WHERE district = $1 AND subdivision = $2 
+            ORDER BY date DESC, time DESC;
+        `;
+
         const result = await pool.query(query, [district, subdivision]);
-        for(let i=0;i<result.rows.length;i++){
-            if(result.rows[i].incident_type=='Harassment' && result.rows[i].status=='Pending'){
-                result.rows[i].victim_details="";
-                result.rows[i].suspect_details="";
+
+        // Hide suspect & victim details for pending complaints
+        result.rows = result.rows.map((complaint) => {
+            if (complaint.status === "Pending") {
+                return {
+                    ...complaint,
+                    victim_details: "Confidential until accepted",
+                    suspect_details: "Confidential until accepted",
+                    witness_details: "Confidential until accepted",
+                };
             }
-        }
+            return complaint;
+        });
+
         res.json(result.rows);
-         console.log(result.rows[0]);
     } catch (error) {
         console.error("Error fetching complaints:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 router.put("/update_complaint_status/:complaintId", async (req, res) => {
     const { complaintId } = req.params;
@@ -87,7 +104,7 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
     }
 
     try {
-        // Check if complaint exists and get its details
+        // Check if complaint exists
         const complaintResult = await pool.query(
             "SELECT * FROM complaints WHERE complaint_id = $1",
             [complaintId]
@@ -96,21 +113,30 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
         if (complaintResult.rows.length === 0) {
             return res.status(404).json({ error: "Complaint not found" });
         }
+
         const complaint = complaintResult.rows[0];
         const subdivision = complaint.subdivision;
-        const crime_type=complaint.incident_type; // Extract subdivision & crime_type from complaint
-        // Update the complaint status
+        let crime_type = complaint.incident_type; // Use let instead of const
+
+        if (!crime_type) {
+            return res.status(400).json({ error: "Incident type is missing in the complaint" });
+        }
+
+        crime_type = crime_type.toLowerCase(); // Ensure lowercase
+
+        // Update complaint status
         await pool.query(
             "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
             [status, complaintId]
         );
-        console.log(status.toLowerCase());
+
+        console.log(`Complaint ${complaintId} status updated to: ${status}`);
+
         // If complaint is accepted, update crime_statistics
         if (status.toLowerCase() === "under investigation") {
-            
             const updateCrimeQuery = `
                 UPDATE crime_statistics
-                SET ${crime_type} = ${crime_type} + 1
+                SET "${crime_type}" = "${crime_type}" + 1
                 WHERE subdivision = $1
             `;
             await pool.query(updateCrimeQuery, [subdivision]);
@@ -123,5 +149,106 @@ router.put("/update_complaint_status/:complaintId", async (req, res) => {
     }
 });
 
+
+
+// This should be in your routes file where other police routes are defined
+// In your Express routes file
+router.get("/complaint_details/:complaintId", async (req, res) => {
+    const { complaintId } = req.params;
+    
+    try {
+      console.log(`Getting details for complaint: ${complaintId}`);
+      
+      // Get all columns from the complaints table
+      const complaintResult = await pool.query(
+        `SELECT * FROM complaints WHERE complaint_id = $1`,
+        [complaintId]
+      );
+      
+      if (complaintResult.rows.length === 0) {
+        console.log(`No complaint found with ID: ${complaintId}`);
+        return res.status(404).json({ error: "Complaint not found" });
+      }
+      
+      // Get the complaint data
+      const complaintData = complaintResult.rows[0];
+      
+      // Process the evidence_files field if it exists
+      if (complaintData.evidence_files && typeof complaintData.evidence_files === 'string') {
+        try {
+          complaintData.evidence_files = JSON.parse(complaintData.evidence_files);
+        } catch (e) {
+          console.warn("Failed to parse evidence_files JSON:", e);
+          // Keep as string if parsing fails
+        }
+      }
+      
+      // Add a formatted police_station field for convenience
+      complaintData.police_station = `${complaintData.district} - ${complaintData.subdivision}`;
+      
+      console.log("Successfully retrieved complaint details");
+      res.json(complaintData);
+    } catch (error) {
+      console.error("Error fetching complaint details:", error);
+      res.status(500).json({ 
+        error: "Internal server error",
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  });
+ 
+  
+  
+  
+
+router.post("/find_suspects", (req, res) => {
+  const { crime_type, identifying_mark, complexion, last_known_address } = req.body;
+  const results = [];
+
+  fs.createReadStream("data/Suspect_dataset.csv")
+    .pipe(csv())
+    .on("data", (row) => {
+      const matchCrime = !crime_type || row["Types of Crimes"]?.toLowerCase().includes(crime_type.toLowerCase());
+      const matchMark = !identifying_mark || row["Identifying Mark"]?.toLowerCase().includes(identifying_mark.toLowerCase());
+      const matchComplexion = !complexion || row["Complexion"]?.toLowerCase().includes(complexion.toLowerCase());
+      const matchAddress = !last_known_address || row["Last Known Address"]?.toLowerCase().includes(last_known_address.toLowerCase());
+
+      if (matchCrime && matchMark && matchComplexion && matchAddress) {
+        results.push({
+          ID: row["ID"],
+          Name: row["Name"],
+          Gender: row["Gender"],
+          Age: row["Age"],
+          Height: row["Height"],
+          Weight: row["Weight"],
+          "Eye Color": row["Eye Color"],
+          "Hair Color": row["Hair Color"],
+          Complexion: row["Complexion"],
+          "Identifying Mark": row["Identifying Mark"],
+          Build: row["Build"],
+          "Last Known Address": row["Last Known Address"],
+          Occupation: row["Occupation"],
+          "Previous Convictions": row["Previous Convictions"],
+          "Types of Crimes": row["Types of Crimes"],
+          "Gang Affiliation": row["Gang Affiliation"]
+        });
+      }
+    })
+    .on("end", () => {
+      if (results.length === 0) {
+        res.json({ message: "No matching suspects found", data: [] });
+      } else {
+        res.json({ data: results });
+      }
+    })
+    .on("error", (err) => {
+      res.status(500).json({ message: "Error reading CSV", error: err.message });
+    });
+});
+
+
+
+  
 
 export default router;

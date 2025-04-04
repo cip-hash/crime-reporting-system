@@ -106,52 +106,72 @@ router.get('/generate_complaint_id', async (req, res) => {
 /**
  * ✅ Submit a Crime Report (Insert into Database)
  */
-router.post("/report", upload.array('evidenceFiles', 5),async (req, res) => {
+router.post("/report", upload.array('evidenceFiles', 5), async (req, res) => {
     console.log("📌 Received Crime Report Data:", req.body);
 
+    const complainantEmail = req.headers["user-email"]; // Fetch email from request headers
+
+    if (!complainantEmail) {
+        return res.status(401).json({ error: "Unauthorized: User email not found in request" });
+    }
+
     const {
-        user_email,
         complaintId,
+        complainantName,
+        complainantPhone,
+        relationToVictim,
+        
+        victimName,
+        victimPhone,
+        victimAgeGender,
+        victimRelation,
+
         incidentType,
+        title,
         date,
         time,
         district,
         subdivision,
-        title,
+        exactAddress,
         description,
-        suspect,
-        victim,
-        witness
+
+        suspectName,
+        suspectMarks,
+        suspectComplexion,
+        suspectAddress,
+
+        witnessName,
+        witnessContact,
+        witnessStatement
     } = req.body;
+
     const evidencePaths = req.files ? req.files.map(file => file.path) : [];
-    console.log(user_email);
-    if (!user_email || !incidentType || !date || !time || !district || !subdivision || !description) {
+
+    // Validate required fields
+    if (!complainantName || !complainantPhone || !incidentType || !date || !time || !district || !subdivision || !description || !exactAddress) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
     try {
         const insertQuery = `
             INSERT INTO complaints (
-                complainant_email,complaint_id, incident_type,title, date, time, district, subdivision, description,
-                suspect_details, victim_details, witness_details,evidence_files
+                complaint_id, complainant_name, complainant_phone, complainant_email, relation_to_victim,
+                victim_name, victim_phone, victim_age_gender, victim_relation,
+                incident_type, title, date, time, district, subdivision, exact_address, description,
+                suspect, suspect_marks, suspect_complexion, suspect_address,
+                witness, witness_contact, witness_statement,
+                evidence_files
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-            RETURNING complaint_id,complainant_email, created_at,status;
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
+            RETURNING complaint_id, created_at, status;
         `;
 
         const result = await pool.query(insertQuery, [
-            user_email, // Include userId
-            complaintId,
-            incidentType,
-            title,
-            date,
-            time,
-            district,
-            subdivision,
-            description,
-            suspect,
-            victim,
-            witness,
+            complaintId, complainantName, complainantPhone, complainantEmail, relationToVictim,
+            victimName, victimPhone, victimAgeGender, victimRelation,
+            incidentType, title, date, time, district, subdivision, exactAddress, description,
+            suspectName, suspectMarks, suspectComplexion, suspectAddress,
+            witnessName, witnessContact, witnessStatement,
             JSON.stringify(evidencePaths)
         ]);
 
@@ -159,14 +179,16 @@ router.post("/report", upload.array('evidenceFiles', 5),async (req, res) => {
 
         res.status(201).json({
             message: "Crime report submitted successfully",
-            reportId: result.rows[0].id,
+            reportId: result.rows[0].complaint_id,
             createdAt: result.rows[0].created_at,
+            status: result.rows[0].status
         });
     } catch (error) {
         console.error("❌ Error inserting crime report:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 /**
  * ✅ Fetch Crime Reports

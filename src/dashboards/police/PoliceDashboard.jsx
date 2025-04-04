@@ -6,15 +6,50 @@ import PoliceHeatmap from "./PoliceHeatmap";
 import PoliceViewComplaint from "./PoliceViewComplaint";
 
 const PoliceDashboard = () => {
-    const [activeTab, setActiveTab] = useState("report"); // Default to heatmap
-    const [complaints, setComplaints] = useState([]);
+    const [activeTab, setActiveTab] = useState("report");
+    const [complaints, setComplaints] = useState([]);  // Ensure it's an array
     const [selectedComplaintId, setSelectedComplaintId] = useState(null);
-    const [status, setStatus] = useState({});
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchComplaints = async () => {
+            setLoading(true);
+            try {
+                const district = sessionStorage.getItem("policedistrict");
+                const subdivision = sessionStorage.getItem("policesubdivision");
+    
+                if (!district || !subdivision) {
+                    console.error("Missing district or subdivision in session storage");
+                    setLoading(false);
+                    return;
+                }
+    
+                const response = await axios.get("http://localhost:5000/api/police/get_complaints", {
+                    params: { district, subdivision },
+                });
+    
+                console.log("API Response:", response.data); // Debugging line
+    
+                if (Array.isArray(response.data)) {
+                    setComplaints(response.data);
+                } else {
+                    console.error("Expected an array, but got:", response.data);
+                    setComplaints([]);
+                }
+            } catch (err) {
+                console.error("Error fetching complaints:", err);
+                setError("Failed to load complaints");
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchComplaints();
+    }, []);
+    
     const handleLogout = () => {
         localStorage.removeItem("userToken");
         navigate("/login");
@@ -69,8 +104,30 @@ const PoliceDashboard = () => {
                     </h2>
                 </div>
                 {error && <p className="text-red-600 font-semibold">{error}</p>}
-                {activeTab === "report" && <PoliceViewComplaint />}
+                {activeTab === "report" && (
+                    <div className="bg-white p-4 shadow rounded-lg">
+                        <h2 className="text-xl font-bold text-gray-700 mb-4">Complaints</h2>
+                        {loading ? (
+                            <p className="text-gray-600">Loading...</p>
+                        ) : (
+                            <ul>
+                                {(complaints || []).map((complaint) => (
+                                    <li key={complaint.complaint_id} className="border-b py-2 flex justify-between">
+                                        <span>{complaint.title}</span>
+                                        <button
+                                            onClick={() => setSelectedComplaintId(complaint.complaint_id)}
+                                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                                        >
+                                            View
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                )}
                 {activeTab === "heatmap" && <PoliceHeatmap />}
+                {selectedComplaintId && <PoliceViewComplaint complaintId={selectedComplaintId} />}
             </div>
         </div>
     );
