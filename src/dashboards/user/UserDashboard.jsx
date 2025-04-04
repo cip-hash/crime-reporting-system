@@ -4,6 +4,8 @@ import { Home, FileText, Send, Bell, LogOut, Settings, Shield } from "lucide-rea
 import ReportCrime from "./ReportCrime";
 import TrackStatus from "./TrackStatus";
 import MyReports from "./MyReports";
+import Chatbot from "./Chatbot";
+
 
 const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("report");
@@ -122,12 +124,15 @@ const UserDashboard = () => {
         
         {/* Main Content Area */}
         <main className="flex-1 overflow-auto p-6 bg-gray-100">
-          <div className="bg-white rounded-xl shadow-sm p-6 h-full border border-gray-200">
-            {activeTab === "report" && <ReportCrime />}
-            {activeTab === "status" && <TrackStatus />}
-            {/* {activeTab === "reports" && <MyReports />} */}
-          </div>
-        </main>
+  <div className="bg-white rounded-xl shadow-sm p-6 h-full border border-gray-200">
+    {activeTab === "report" && <ReportCrime />}
+    {activeTab === "status" && <TrackStatus />}
+    <Chatbot />  {/* Chatbot Component */}
+  </div>
+</main>
+
+
+
       </div>
     </div>
   );

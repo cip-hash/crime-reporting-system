@@ -15,10 +15,10 @@ const pool = new Pool({
     // password: process.env.DB_PASSWORD,
     // port: process.env.DB_PORT || 5432,
     user:"postgres",
-    password:"dbms",
+    password:"postgres123@",
     host:"localhost",
     port: 5432,
-    database:'cip'
+    database:'crime_reporting_system'
 });
 
 pool.connect((err, client, release) => {

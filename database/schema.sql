@@ -28,10 +28,11 @@ CREATE TABLE crime_statistics (
     robbery INTEGER,
     graveburglary INTEGER,
     gravetheft INTEGER,
+    harassment INTEGER,
     other INTEGER,
     latitude NUMERIC(10,7),
     longitude NUMERIC(10,7),
-    harassment INTEGER,
+    
     PRIMARY KEY (district, subdivision)
 );
 ALTER TABLE crime_statistics 
@@ -58,7 +59,7 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
     
 );
 
@@ -113,3 +114,55 @@ update crime_statistics set latitude=10.58524046,longitude=77.244468029 where su
 update crime_statistics set latitude=10.971357045,longitude= 76.9143078 where subdivision like '%Perur%';
 update crime_statistics set latitude=10.94748094,longitude= 76.9499633 where subdivision like '%Kuniyamuthur%';
 update crime_statistics set latitude=10.9658980,longitude= 76.98555553 where subdivision like '%Podanur%';
+
+
+
+
+
+CREATE TABLE complaints (
+    complaint_id VARCHAR(20) PRIMARY KEY,
+    
+    -- Complainant Information
+    complainant_name VARCHAR(255) NOT NULL,
+    complainant_phone VARCHAR(50) NOT NULL,
+    complainant_email VARCHAR(100) NOT NULL,
+    relation_to_victim VARCHAR(100),
+    
+    -- Victim Information
+    victim_name VARCHAR(255),
+    victim_phone VARCHAR(50),
+    victim_age_gender VARCHAR(50),
+    victim_relation VARCHAR(100),
+    
+    -- Incident Details
+    incident_type VARCHAR(255) NOT NULL,
+    title VARCHAR(255),
+    date DATE NOT NULL,
+    time TIME WITHOUT TIME ZONE NOT NULL,
+    district VARCHAR(50) NOT NULL,
+    subdivision VARCHAR(50) NOT NULL,
+    exact_address TEXT NOT NULL,
+    description TEXT NOT NULL,
+    
+    -- Suspect Information
+    suspect TEXT,
+    suspect_marks TEXT,
+    suspect_complexion TEXT,
+    suspect_address TEXT,
+    
+    -- Witness Details
+    witness TEXT,
+    witness_contact TEXT,
+    witness_statement TEXT,
+    
+    -- Evidence and Status
+    evidence_files JSONB,
+    status VARCHAR(50) DEFAULT 'Pending',
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+    
+    -- Legacy fields (kept for compatibility)
+    victim_details TEXT,
+    
+    CONSTRAINT fk_complaints_crime_stats FOREIGN KEY (district, subdivision) 
+    REFERENCES crime_statistics (district, subdivision)
+);
