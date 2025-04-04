@@ -1,10 +1,39 @@
 import express from "express";
 import bcrypt from "bcryptjs";
-import pool from "../config/db.js"; // Ensure database connection is properly imported
+import pool from "../config/db.js";
 import fs from "fs";
 import csv from "csv-parser";
-
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import connection from '../config/db.js';
 const router = express.Router();
+// Add this to the top of your policeRoutes.js file if not already there
+
+
+// Or if you're using a different pattern, make sure to import your database connection
+
+// For ES modules, we need to recreate __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Create uploads directory if it doesn't exist
+const uploadDir = path.join(__dirname, '..', 'uploads', 'evidence');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Set up multer with this directory
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // ✅ Get all police officers from the database
 router.get("/", async (req, res) => {
@@ -95,59 +124,60 @@ router.get("/get_complaints", async (req, res) => {
 });
 
 
+// Updated backend route for updating complaint status
 router.put("/update_complaint_status/:complaintId", async (req, res) => {
     const { complaintId } = req.params;
     const { status } = req.body;
-
+    
     if (!status) {
-        return res.status(400).json({ error: "Status is required" });
+      return res.status(400).json({ error: "Status is required" });
     }
-
+    
     try {
-        // Check if complaint exists
-        const complaintResult = await pool.query(
-            "SELECT * FROM complaints WHERE complaint_id = $1",
-            [complaintId]
-        );
-
-        if (complaintResult.rows.length === 0) {
-            return res.status(404).json({ error: "Complaint not found" });
-        }
-
-        const complaint = complaintResult.rows[0];
-        const subdivision = complaint.subdivision;
-        let crime_type = complaint.incident_type; // Use let instead of const
-
-        if (!crime_type) {
-            return res.status(400).json({ error: "Incident type is missing in the complaint" });
-        }
-
-        crime_type = crime_type.toLowerCase(); // Ensure lowercase
-
-        // Update complaint status
-        await pool.query(
-            "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
-            [status, complaintId]
-        );
-
-        console.log(`Complaint ${complaintId} status updated to: ${status}`);
-
-        // If complaint is accepted, update crime_statistics
-        if (status.toLowerCase() === "under investigation") {
-            const updateCrimeQuery = `
-                UPDATE crime_statistics
-                SET "${crime_type}" = "${crime_type}" + 1
-                WHERE subdivision = $1
-            `;
-            await pool.query(updateCrimeQuery, [subdivision]);
-        }
-
-        res.json({ message: "Complaint status updated successfully" });
+      // Check if complaint exists
+      const complaintResult = await pool.query(
+        "SELECT * FROM complaints WHERE complaint_id = $1",
+        [complaintId]
+      );
+      
+      if (complaintResult.rows.length === 0) {
+        return res.status(404).json({ error: "Complaint not found" });
+      }
+      
+      const complaint = complaintResult.rows[0];
+      const subdivision = complaint.subdivision;
+      let crime_type = complaint.incident_type; // Use let instead of const
+      
+      if (!crime_type) {
+        return res.status(400).json({ error: "Incident type is missing in the complaint" });
+      }
+      
+      crime_type = crime_type.toLowerCase(); // Ensure lowercase
+      
+      // Update complaint status
+      await pool.query(
+        "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
+        [status, complaintId]
+      );
+      
+      console.log(`Complaint ${complaintId} status updated to: ${status}`);
+      
+      // If complaint is set to investigation, update crime_statistics
+      if (status.toLowerCase() === "under investigation") {
+        const updateCrimeQuery = `
+          UPDATE crime_statistics
+          SET "${crime_type}" = "${crime_type}" + 1
+          WHERE subdivision = $1
+        `;
+        await pool.query(updateCrimeQuery, [subdivision]);
+      }
+      
+      res.json({ message: "Complaint status updated successfully" });
     } catch (error) {
-        console.error("Error updating complaint status:", error);
-        res.status(500).json({ error: "Internal server error" });
+      console.error("Error updating complaint status:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-});
+  });
 
 
 
@@ -200,7 +230,8 @@ router.get("/complaint_details/:complaintId", async (req, res) => {
  
   
   
-  
+  // ✅ Route: GET /api/police/find_suspects
+
 
 router.post("/find_suspects", (req, res) => {
   const { crime_type, identifying_mark, complexion, last_known_address } = req.body;
@@ -247,8 +278,283 @@ router.post("/find_suspects", (req, res) => {
     });
 });
 
+// Add these routes to your Express app
 
+// Get notes for a specific complaint
+// Get notes for a specific complaint
 
+  // Add a new note
+  // Add a new note
+  router.get('/complaint_notes/:complaintId', async (req, res) => {
+    try {
+      const complaintId = req.params.complaintId;
+      
+      // Query to get notes with officer info
+      const query = `
+        SELECT n.*, p.name as officer_name 
+        FROM investigation_notes n
+        LEFT JOIN police p ON n.officer_id = p.id
+        WHERE n.complaint_id = $1
+        ORDER BY n.created_at DESC
+      `;
+      
+      const result = await pool.query(query, [complaintId]);
+      
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      res.status(500).json({ error: 'Failed to fetch notes' });
+    }
+  });
   
+  // Add a new note
+  // Add a new note
+  router.post('/add_note', async (req, res) => {
+    try {
+      const { complaint_id, officer_id, note_text } = req.body;
+      
+      // Improved validation with specific error messages
+      if (!complaint_id) {
+        return res.status(400).json({ error: 'Missing complaint_id' });
+      }
+      
+      if (!officer_id) {
+        return res.status(400).json({ error: 'Missing officer_id' });
+      }
+      
+      if (!note_text || !note_text.trim()) {
+        return res.status(400).json({ error: 'Note text cannot be empty' });
+      }
+      
+      // Only convert officer_id to integer, keep complaint_id as string
+      const officerIdInt = parseInt(officer_id, 10);
+      
+      if (isNaN(officerIdInt)) {
+        return res.status(400).json({ error: 'Invalid officer_id format' });
+      }
+      
+      const query = `
+        INSERT INTO investigation_notes 
+        (complaint_id, officer_id, note_text, created_at, updated_at)
+        VALUES ($1, $2, $3, NOW(), NOW())
+        RETURNING *
+      `;
+      
+      // Pass complaint_id directly as a string
+      const result = await pool.query(query, [complaint_id, officerIdInt, note_text]);
+      
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error adding note:', error);
+      res.status(500).json({ error: 'Failed to add note: ' + error.message });
+    }
+  });
+  // Update an existing note
+  router.put('/update_note/:noteId', async (req, res) => {
+    try {
+      const noteId = req.params.noteId;
+      const { note_text } = req.body;
+      
+      if (!note_text) {
+        return res.status(400).json({ error: 'Note text is required' });
+      }
+      
+      const query = `
+        UPDATE investigation_notes
+        SET note_text = $1, updated_at = NOW()
+        WHERE note_id = $2
+        RETURNING *
+      `;
+      
+      const result = await pool.query(query, [note_text, noteId]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Note not found' });
+      }
+      
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error updating note:', error);
+      res.status(500).json({ error: 'Failed to update note' });
+    }
+  });
+  
+  // Delete a note
+  router.delete('/delete_note/:noteId', async (req, res) => {
+    try {
+      const noteId = req.params.noteId;
+      
+      const query = `
+        DELETE FROM investigation_notes
+        WHERE note_id = $1
+        RETURNING *
+      `;
+      
+      const result = await pool.query(query, [noteId]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Note not found' });
+      }
+      
+      res.json({ message: 'Note deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      res.status(500).json({ error: 'Failed to delete note' });
+    }
+  });
 
+  // Update an existing note
+  router.put('/update_note/:noteId', async (req, res) => {
+    try {
+      const noteId = req.params.noteId;
+      const { note_text } = req.body;
+      
+      if (!note_text) {
+        return res.status(400).json({ error: 'Note text is required' });
+      }
+      
+      const query = `
+        UPDATE investigation_notes
+        SET note_text = $1, updated_at = NOW()
+        WHERE note_id = $2
+        RETURNING *
+      `;
+      
+      const result = await pool.query(query, [note_text, noteId]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Note not found' });
+      }
+      
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error updating note:', error);
+      res.status(500).json({ error: 'Failed to update note' });
+    }
+  });
+  
+  // Delete a note
+  router.delete('/delete_note/:noteId', async (req, res) => {
+    try {
+      const noteId = req.params.noteId;
+      
+      const query = `
+        DELETE FROM investigation_notes
+        WHERE note_id = $1
+        RETURNING *
+      `;
+      
+      const result = await pool.query(query, [noteId]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Note not found' });
+      }
+      
+      res.json({ message: 'Note deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      res.status(500).json({ error: 'Failed to delete note' });
+    }
+  });
+
+
+  // Add this new route for handling final reports
+  router.post("/final-report", upload.array('evidence', 5), async (req, res) => {
+    try {
+      const { complaint_id, officer_id, report, final_status, remarks } = req.body;
+  
+      if (!complaint_id || !officer_id || !report || !final_status) {
+        return res.status(400).json({
+          success: false,
+          error: "Missing required fields"
+        });
+      }
+  
+      // Handle multiple evidence files
+      let evidence_files = [];
+      if (req.files && req.files.length > 0) {
+        evidence_files = req.files.map(file => ({
+          filename: file.originalname,
+          path: file.path,
+          mimetype: file.mimetype
+        }));
+      }
+  
+      const insertQuery = `
+        INSERT INTO final_reports (
+          complaint_id,
+          officer_id,
+          report_text,
+          final_status,
+          remarks,
+          evidence_files
+        )
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING report_id
+      `;
+  
+      const result = await pool.query(insertQuery, [
+        complaint_id,
+        officer_id,
+        report,
+        final_status,
+        remarks,
+        JSON.stringify(evidence_files)
+      ]);
+  
+      const report_id = result.rows[0].report_id;
+  
+      // Update complaint status to "Closed(final_status)"
+      const newStatus = `Closed(${final_status})`;
+      await pool.query(
+        "UPDATE complaints SET status = $1 WHERE complaint_id = $2",
+        [newStatus, complaint_id]
+      );
+  
+      console.log(`✅ Final report ${report_id} submitted for complaint ${complaint_id} by officer ${officer_id}`);
+      console.log(`🔁 Complaint status updated to: ${newStatus}`);
+  
+      res.json({
+        success: true,
+        message: "Final report submitted successfully",
+        report_id
+      });
+  
+    } catch (error) {
+      console.error("❌ Error submitting final report:", error);
+      res.status(500).json({
+        success: false,
+        error: "Server error while submitting report"
+      });
+    }
+  });
+
+  router.get('/final-report/:complaintId', async (req, res) => {
+    try {
+      const { complaintId } = req.params;
+      console.log(`Fetching final report for complaint ID: ${complaintId}`);
+      
+      const query = `
+        SELECT fr.*, po.name AS officer_name 
+        FROM final_reports fr
+        LEFT JOIN police po ON fr.officer_id = po.id
+        WHERE fr.complaint_id = $1
+        ORDER BY fr.created_at DESC
+        LIMIT 1
+      `;
+      
+      const result = await pool.query(query, [complaintId]);
+      
+      if (result.rows.length === 0) {
+        console.log(`No final report found for complaint ID: ${complaintId}`);
+        return res.status(404).json({ error: 'Final report not found' });
+      }
+      
+      console.log(`Final report found:`, result.rows[0]);
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error fetching final report:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 export default router;
