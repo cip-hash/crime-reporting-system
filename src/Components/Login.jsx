@@ -25,6 +25,7 @@ const Login = () => {
             // Store authentication details in session storage
             sessionStorage.setItem("authToken", response.token);
             sessionStorage.setItem("userRole", response.user.role);
+           
             if(response.user.role=="user"){
                 sessionStorage.setItem("user_email",response.user.email);
                 console.log("success in email");
@@ -32,8 +33,11 @@ const Login = () => {
             if (response.user.role === "police") {
                 sessionStorage.setItem("policedistrict", response.user.district);
                 sessionStorage.setItem("policesubdivision", response.user.subdivision);
+                sessionStorage.setItem("policeid", response.user.id); // ✅ Correct
+                console.log("POLICE ID:", response.user.id); // ✅ FIXED (was undefined)
                 console.log('ji');
             }
+            
             // ✅ Ensure session storage updates before navigating
             setTimeout(() => {
                 switch (response.user.role) {

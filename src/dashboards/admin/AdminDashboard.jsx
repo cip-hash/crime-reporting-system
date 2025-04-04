@@ -16,7 +16,7 @@ import {
 } from "react-icons/fi";
 import ManagePolice from "./ManagePolice";
 import ManageUsers from "./ManageUsers";
-import ViewReports from "./ViewReports";
+import FinalReports from "./FinalReports";
 import AdminHeatmap from "../admin/AdminHeatmap";
 
 
@@ -118,18 +118,28 @@ export default function AdminDashboard() {
                        onClick={() => setActiveTab("heatmap")}>
                        <FiMap className="mr-3" /> Crime Heatmap
                    </button>
-                        {/* <Link 
-                            to="/admin/view-reports" 
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/view-reports")}`}
-                        >
-                            <FiFileText /> <span>View Reports</span>
-                        </Link>
-                        <Link 
+                   {/* ADD */}
+
+
+                    <button 
+    className={`flex items-center px-4 py-3 w-full rounded-lg ${activeTab === 'finalReports' ? 'bg-blue-700' : 'hover:bg-blue-700'}`} 
+    onClick={() => setActiveTab("finalReports")}>
+    <FiFileText className="mr-3" /> View Reports
+</button> 
+
+
+                        {/* // { <Link> 
+                        //     to="/admin/view-reports" 
+                        //     className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/view-reports")}`}
+                        // >
+                        //     <FiFileText /> <span>View Reports</span>
+                        // </Link> }
+                        /*<Link 
                             to="/admin/statistics" 
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 ${isActive("/admin/statistics")}`}
                         >
                             <FiBarChart2 /> <span>Statistics</span>
-                        </Link> */}
+                        </Link> */} 
                         
                         <p className="text-xs uppercase text-blue-300 font-semibold tracking-wider mt-6 mb-2 pl-4">Administration</p>
                         <button 
@@ -227,41 +237,31 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 </header>
-
                 <main className="p-6">
-                    {/* Dashboard stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    
-                    {stats.map((stat, index) => (
-                        <div key={index} className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
-                                    <p className="text-2xl font-bold text-gray-700 mt-1">{stat.value}</p>
-                                </div>
-                                <div className="bg-gray-100 p-3 rounded-full">
-                                    {stat.icon}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                    </div>
-                    
-                    <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <Routes>
-                            <Route path="admin/heatmap" element={<AdminHeatmap />} />
-                            <Route path="manage-police" element={<ManagePolice />} />
-                            <Route path="manage-users" element={<ManageUsers />} />
-                            <Route path="view-reports" element={<ViewReports />} />
-                            <Route path="*" element={
-                                <div className="text-center py-10">
-                                    
-                                    {activeTab === "dashboard" ?<h2 className="text-2xl font-bold text-gray-700">Welcome to Admin Dashboard</h2>:activeTab==="heatmap"? <AdminHeatmap /> : <ManagePolice />}
-                                </div>
-                            } />
-                        </Routes>
-                    </div>
-                </main>
+  {activeTab === "dashboard" && (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-gray-500 font-semibold">{stat.title}</p>
+                <h2 className="text-2xl font-bold text-gray-800">{stat.value}</h2>
+              </div>
+              {stat.icon}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  )}
+
+  {activeTab === "heatmap" && <AdminHeatmap />}
+  {activeTab === "finalReports" && <FinalReports />}
+  {activeTab === "managePolice" && <ManagePolice />}
+  {activeTab === "manageUsers" && <ManageUsers />}
+</main>
+
             </div>
         </div>
     );
