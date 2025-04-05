@@ -59,7 +59,8 @@ const PoliceSos = () => {
                                 className="p-4 bg-red-100 border-l-4 border-red-500 rounded-lg cursor-pointer hover:bg-red-200 transition"
                                 onClick={() => window.open(`https://www.google.com/maps?q=${lastLocation.latitude},${lastLocation.longitude}`, "_blank")}
                             >
-                                <p><strong>User:</strong> {sos.user_email}</p>
+                                <p><strong>User name:</strong> {sos.name}</p>
+                                <p><strong>User email:</strong> {sos.user_email}</p>
                                 <p><strong>Last Location:</strong> {lastLocation.latitude}, {lastLocation.longitude}</p>
                                 <p><strong>Time:</strong> {new Date(lastLocation.timestamp).toLocaleString()}</p>
                             </div>
@@ -78,7 +79,8 @@ const PoliceSos = () => {
                         const lastLocation = sos.locations[sos.locations.length - 1];
                         return (
                             <div key={sos.id} className="p-4 bg-gray-200 border-l-4 border-gray-500 rounded-lg">
-                                <p><strong>User:</strong> {sos.user_email}</p>
+                                <p><strong>User name:</strong> {sos.name}</p>
+                                <p><strong>User email:</strong> {sos.user_email}</p>
                                 <p><strong>Last Location:</strong> {lastLocation.latitude}, {lastLocation.longitude}</p>
                                 <p><strong>Resolved At:</strong> {new Date(lastLocation.timestamp).toLocaleString()}</p>
                             </div>

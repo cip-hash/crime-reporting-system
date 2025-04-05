@@ -133,8 +133,8 @@ router.get("/sos", async (req, res) => {
 
     try {
         const query = `
-            SELECT id, user_email, status, locations, created_at
-            FROM sos_alerts
+            SELECT u.name,s.id, s.user_email, s.status, s.locations, s.created_at
+            FROM sos_alerts as s join users as u on u.email=s.user_email
             WHERE police_subdivision = $1
             ORDER BY created_at DESC;
         `;
@@ -147,7 +147,5 @@ router.get("/sos", async (req, res) => {
         res.status(500).json({ message: "🔥 Internal Server Error" });
     }
 });
-
-
 
 export default router;
