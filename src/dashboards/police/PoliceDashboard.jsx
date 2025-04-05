@@ -9,7 +9,6 @@ import PoliceSos from "./PoliceSos";
 const PoliceDashboard = () => {
     const [activeTab, setActiveTab] = useState("report");
     const [complaints, setComplaints] = useState([]);  // Ensure it's an array
-    const [selectedComplaintId, setSelectedComplaintId] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -114,32 +113,29 @@ const PoliceDashboard = () => {
                     </h2>
                 </div>
                 {error && <p className="text-red-600 font-semibold">{error}</p>}
-                {activeTab === "report" && (
+                {/* {activeTab === "report" && (
                     <div className="bg-white p-4 shadow rounded-lg">
                         <h2 className="text-xl font-bold text-gray-700 mb-4">Complaints</h2>
                         {loading ? (
                             <p className="text-gray-600">Loading...</p>
                         ) : (
-                            <ul>
+                            <div className="space-y-4">
                                 {(complaints || []).map((complaint) => (
-                                    <li key={complaint.complaint_id} className="border-b py-2 flex justify-between">
-                                        <span>{complaint.title}</span>
-                                        <button
-                                            onClick={() => setSelectedComplaintId(complaint.complaint_id)}
-                                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                                        >
-                                            View
-                                        </button>
-                                    </li>
+                                    <div key={complaint.complaint_id} className="border rounded-lg p-4 bg-gray-50">
+                                        <h3 className="text-lg font-semibold text-blue-700 mb-2">{complaint.title}</h3>
+                                        <PoliceViewComplaint complaintId={complaint.complaint_id} />
+                                    </div>
                                 ))}
-                            </ul>
+                                {complaints.length === 0 && (
+                                    <p className="text-gray-500 italic">No complaints found for this district and subdivision.</p>
+                                )}
+                            </div>
                         )}
                     </div>
-                )}
+                )} */}
+                {activeTab === "report" && <PoliceViewComplaint />}
                 {activeTab === "heatmap" && <PoliceHeatmap />}
                 {activeTab === "sos" && <PoliceSos />}
-                
-                {selectedComplaintId && <PoliceViewComplaint complaintId={selectedComplaintId} />}
             </div>
         </div>
     );
