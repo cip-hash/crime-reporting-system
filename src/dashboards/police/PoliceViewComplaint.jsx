@@ -597,15 +597,15 @@ const [loadingReports, setLoadingReports] = useState({});
       }
     };
     
-    // Add a new function to check if the status indicates a final report exists
-    // const hasFinalReport = (status) => {
-    //   return status.startsWith("Closed(") || status === "Closed";
-    // };
+    //Add a new function to check if the status indicates a final report exists
+    const hasFinalReport = (status) => {
+      return status.startsWith("Closed(") || status === "Closed";
+    };
     
-    // Modify the renderClosedComplaintActions function to include download option
+    //Modify the renderClosedComplaintActions function to include download option
    
   
-    // Rest of your component remains the same
+   // Rest of your component remains the same
   
 
     return (
@@ -825,25 +825,25 @@ const hasFinalReport = (status) => {
     if (complaint.status === "Closed") {
       return (
         <button
-          onClick={() => handleOpenFinalReportForm(complaint)}
+          // onClick={() => handleOpenFinalReportForm(complaint)}
           className="w-full mt-2 p-2 bg-green-600 text-white rounded-lg hover:bg-green-800"
         >
-          Fill Final Form
+          {/* Fill Final Form */}
         </button>
       );
     } else if (hasFinalReport(complaint.status)) {
-      // return (
-      //   <button
-      //     onClick={() => downloadFinalReport(complaint.complaint_id)}
-      //     className="w-full mt-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 flex items-center justify-center"
-      //     disabled={loadingReports[complaint.complaint_id]}
-      //   >
-      //     {loadingReports[complaint.complaint_id] ? 
-      //       "Loading..." : 
-      //        <><span className="mr-1">⬇️</span> Download Final Report</>
-      //     }
-      //   </button>
-      // );
+      return (
+        <button
+          onClick={() => downloadFinalReport(complaint.complaint_id)}
+          className="w-full mt-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 flex items-center justify-center"
+          disabled={loadingReports[complaint.complaint_id]}
+        >
+          {loadingReports[complaint.complaint_id] ? 
+            "Loading..." : 
+             <><span className="mr-1">⬇️</span> Download Final Report</>
+          }
+        </button>
+      );
     }
     return null;
   };

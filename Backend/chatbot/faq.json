@@ -1,0 +1,476 @@
+[
+
+    {
+        "question": "What are the fields that must be filled in the complaint form?",
+        "answer": "You must fill in your full name, phone number, type of incident, date, time, district, subdivision, address, and a description of the incident."
+      },
+      
+      {
+        "question": "How to track a complaint?",
+        "answer": "After submitting the complaint form, a unique ID will be generated. In the sidebar, click 'View Crime Status' and paste your complaint ID there."
+      },
+      
+    {
+        "question": "How do I report a missing person?",
+        "answer": "Visit your nearest police station and file a missing person report. Provide a recent photograph and any details that might help in the search."
+    },
+    {
+        "question": "What should I do if I witness a crime?",
+        "answer": "Call the police immediately and provide details such as location, description of suspects, and any other relevant information."
+    },
+    
+    {
+        "question": "How do I report cyber fraud or online scams?",
+        "answer": "Visit the cybercrime reporting portal of your country or contact your local cybercrime unit. Provide details such as transaction ID, emails, and screenshots of fraudulent activities."
+    },
+    {
+        "question": "What should I do if my social media account is hacked?",
+        "answer": "Change your passwords immediately, enable two-factor authentication, and report the issue to the social media platform’s support team."
+    },
+    {
+        "question": "How can I protect myself from phishing attacks?",
+        "answer": "Avoid clicking on unknown links, verify email sender details, and never share sensitive information over email or phone unless verified."
+    },
+    {
+        "question": "How do I report domestic violence?",
+        "answer": "Call the domestic abuse helpline in your area or visit the nearest police station. You can also file a complaint online via the national women’s commission website."
+    },
+    {
+        "question": "What is the helpline number for women in distress?",
+        "answer": "In most countries, you can dial 1091 (Women’s Helpline) or contact the local police for immediate help."
+    },
+    {
+        "question": "How do I report child abuse?",
+        "answer": "Call the child protection helpline (such as 1098 in India) or report the incident to the nearest police station."
+    },
+    {
+        "question": "What should I do if I witness a hit-and-run accident?",
+        "answer": "Note down the vehicle number, call emergency services, and report the incident to the police with as many details as possible."
+    },
+    {
+        "question": "How do I report a drunk driving case?",
+        "answer": "Call the traffic police helpline and provide details like vehicle number, location, and time of the incident."
+    },
+    {
+        "question": "Can I refuse a police search without a warrant?",
+        "answer": "Yes, unless the police have probable cause or you are in a public place where specific exceptions apply."
+    },
+    {
+        "question": "What are my rights if I am detained for questioning?",
+        "answer": "You have the right to remain silent, request legal representation, and ask if you are under arrest."
+    },
+
+    {
+        "question": "How can I report a lost or stolen vehicle?",
+        "answer": "File a report at the nearest police station with your vehicle details, registration number, and any identifying marks. You can also check online portals for stolen vehicle registration."
+    },
+    {
+        "question": "What should I do if I receive threats online?",
+        "answer": "Take screenshots of the threats, block the sender, and report the incident to the cybercrime department or local police."
+    },
+    {
+        "question": "How do I report corruption in government offices?",
+        "answer": "You can file a complaint with the Anti-Corruption Bureau or Vigilance Commission in your country, providing evidence if possible."
+    },
+    {
+        "question": "What steps should I take if I am a victim of identity theft?",
+        "answer": "Report the fraud to the police and your bank, change all passwords, and monitor your financial transactions for any unauthorized activities."
+    },
+    {
+        "question": "How can I get a copy of an FIR I filed?",
+        "answer": "You can request a copy from the police station where you filed it or check the official police department website for online FIR copies."
+    },
+    {
+        "question": "What should I do if someone is blackmailing me?",
+        "answer": "Do not give in to the blackmail. Report the incident to the police along with any messages, emails, or evidence related to the blackmail."
+    },
+    {
+        "question": "How do I report human trafficking cases?",
+        "answer": "Call the human trafficking helpline or report it to the police. Provide details such as location, suspect description, and any observed activities."
+    },
+    {
+        "question": "What should I do if I find an unattended suspicious bag?",
+        "answer": "Do not touch the bag. Immediately inform the nearest police station or dial emergency services to report it."
+    },
+    {
+        "question": "How do I report a fake job scam?",
+        "answer": "Report the scam to the cybercrime cell or consumer protection department. Avoid sharing personal details and verify companies before applying."
+    },
+    {
+        "question": "What legal action can I take if someone is harassing me?",
+        "answer": "You can file a police complaint under harassment laws and seek a restraining order if necessary."
+    },
+    {
+        "question": "How can I protect my home from burglary?",
+        "answer": "Install security cameras, use strong locks, avoid sharing travel plans publicly, and inform neighbors when leaving for extended periods."
+    },
+    {
+        "question": "What should I do if I get a fraudulent call claiming to be from a bank?",
+        "answer": "Do not share any personal details. Hang up immediately and report the call to your bank's fraud department."
+    },
+    {
+        "question": "How do I report illegal drug activities?",
+        "answer": "You can report it anonymously to the police or the narcotics department in your area."
+    },
+    {
+        "question": "What is the process to get police verification for a tenant or employee?",
+        "answer": "You can apply online through the police verification portal or visit the nearest police station with identity proof and relevant documents."
+    },
+    {
+        "question": "How do I register a complaint against police misconduct?",
+        "answer": "You can file a complaint with the Police Complaints Authority, the Human Rights Commission, or approach the senior police officials."
+    },
+
+    {
+        "question": "How can I report a missing child?",
+        "answer": "Immediately contact the police and provide a recent photo, last known location, and details of any suspected persons involved. You can also report the case to child helpline services."
+    },
+    {
+        "question": "What should I do if I am a victim of road rage?",
+        "answer": "Stay calm, avoid confrontation, note down the vehicle number, and report the incident to the police."
+    },
+    {
+        "question": "How do I report illegal construction or land encroachment?",
+        "answer": "File a complaint with your local municipal authority and provide documents or photos supporting your claim."
+    },
+    {
+        "question": "What is the punishment for drunk driving?",
+        "answer": "The punishment varies by country but usually includes fines, license suspension, and possible imprisonment for repeat offenses."
+    },
+    {
+        "question": "How do I report a noise pollution complaint?",
+        "answer": "You can report excessive noise from factories, construction sites, or loudspeakers to your local environmental protection agency or police department."
+    },
+    {
+        "question": "What should I do if I find counterfeit currency?",
+        "answer": "Do not use or circulate the note. Report it to the nearest bank or police station."
+    },
+    {
+        "question": "How do I report workplace harassment?",
+        "answer": "You can file a complaint with your company's HR department or approach legal authorities if necessary."
+    },
+    {
+        "question": "What steps should I take if I am being stalked?",
+        "answer": "Avoid direct confrontation, gather evidence, inform trusted individuals, and report the matter to the police."
+    },
+    {
+        "question": "Can I record police officers while they are on duty?",
+        "answer": "In many countries, you are allowed to record public officials in public places, but avoid interfering with police operations."
+    },
+    {
+        "question": "What should I do if I receive counterfeit products after online shopping?",
+        "answer": "Report the seller to the e-commerce platform and file a consumer complaint if necessary."
+    },
+    {
+        "question": "How do I file a complaint against online harassment?",
+        "answer": "Gather evidence like screenshots and report it to the cybercrime cell or police."
+    },
+    {
+        "question": "What should I do if my credit card is stolen?",
+        "answer": "Immediately inform your bank, block the card, and monitor your transactions for unauthorized activity."
+    },
+    {
+        "question": "How do I report illegal gambling activities?",
+        "answer": "You can report such activities to the police or the anti-gambling enforcement agencies."
+    },
+    {
+        "question": "What should I do if I am falsely accused of a crime?",
+        "answer": "Remain calm, do not resist arrest, hire a lawyer immediately, and gather evidence to prove your innocence."
+    },
+    {
+        "question": "Can I file an anonymous complaint to the police?",
+        "answer": "Yes, in many cases, you can file an anonymous complaint through online portals or crime helplines."
+    },
+    {
+        "question": "What should I do if I see someone carrying a weapon illegally?",
+        "answer": "Do not approach the person. Call emergency services and provide a detailed description."
+    },
+    {
+        "question": "How do I report a hate crime?",
+        "answer": "Contact the police with details of the incident, including evidence like videos or witness statements."
+    },
+    {
+        "question": "What should I do if I receive a bomb threat?",
+        "answer": "Stay calm, do not touch suspicious items, evacuate the area, and inform the police immediately."
+    },
+    {
+        "question": "How do I report a fake charity scam?",
+        "answer": "Verify the organization’s registration, report suspicious activity to consumer protection authorities, and warn others."
+    },
+    {
+        "question": "What should I do if my passport is stolen?",
+        "answer": "Report it to the police, notify your embassy, and apply for a replacement immediately."
+    },
+
+    {
+        "question": "What should I do if I receive threatening messages?",
+        "answer": "Save the messages as evidence, block the sender, and report the incident to the police or cybercrime department."
+    },
+    {
+        "question": "How do I report illegal firearms possession?",
+        "answer": "Contact your local police station or firearms control authority and provide details about the suspect and location."
+    },
+    {
+        "question": "What steps should I take if my debit card is lost or stolen?",
+        "answer": "Immediately contact your bank to block the card and request a replacement. Monitor your account for unauthorized transactions."
+    },
+    {
+        "question": "How do I report a case of extortion?",
+        "answer": "Do not engage with the extortionist. Gather evidence and report the incident to the police immediately."
+    },
+    {
+        "question": "Can I file a police complaint online?",
+        "answer": "Yes, many police departments offer online complaint filing through their official websites or mobile apps."
+    },
+    {
+        "question": "How do I report a fraudulent online seller?",
+        "answer": "Report the seller to the e-commerce platform, consumer protection agency, or cybercrime cell."
+    },
+    {
+        "question": "What should I do if I see someone being physically assaulted?",
+        "answer": "Call emergency services immediately and provide details about the location and attackers. Avoid putting yourself in danger."
+    },
+    {
+        "question": "How do I report an abandoned vehicle?",
+        "answer": "Note the vehicle's details and report it to your local municipal authority or police department."
+    },
+    {
+        "question": "What should I do if my laptop is stolen?",
+        "answer": "Report the theft to the police, provide the serial number, and check online marketplaces for suspicious listings."
+    },
+    {
+        "question": "How do I report a case of workplace discrimination?",
+        "answer": "File a complaint with your HR department, labor board, or human rights commission."
+    },
+    {
+        "question": "What should I do if I suspect someone is committing insurance fraud?",
+        "answer": "Report your suspicion to the insurance company’s fraud investigation unit or law enforcement."
+    },
+    {
+        "question": "How do I report a scam email?",
+        "answer": "Mark the email as spam, do not click any links, and report it to your email provider and cybercrime authorities."
+    },
+    {
+        "question": "What should I do if I find illegal drugs in my neighborhood?",
+        "answer": "Report it anonymously to the local police or anti-narcotics department with details about the location and people involved."
+    },
+    {
+        "question": "How do I report illegal wildlife trade?",
+        "answer": "Contact your country's wildlife protection agency or local law enforcement with details about the incident."
+    },
+    {
+        "question": "What should I do if someone is trespassing on my property?",
+        "answer": "Politely ask them to leave if safe, document the incident, and report it to the police if the trespassing continues."
+    },
+    {
+        "question": "How do I report counterfeit products in stores?",
+        "answer": "Report the store to consumer protection agencies, provide receipts, and keep the counterfeit product as evidence."
+    },
+    {
+        "question": "What should I do if I receive a suspicious package?",
+        "answer": "Do not open it. Move it to a safe location and call the police or bomb disposal unit."
+    },
+    {
+        "question": "How do I report unauthorized surveillance or spying?",
+        "answer": "Gather evidence and report the incident to the police or cybercrime authorities."
+    },
+    {
+        "question": "Can I report a crime if I am not directly involved?",
+        "answer": "Yes, you can report crimes anonymously through police helplines or online portals."
+    },
+    {
+        "question": "How do I report a missing elderly person?",
+        "answer": "File a missing person report at the police station and provide details such as their medical conditions and last known location."
+    },
+    {
+        "question": "What should I do if I suspect my neighbor is involved in illegal activities?",
+        "answer": "Report your concerns to law enforcement anonymously if necessary, providing any relevant details or evidence."
+    },
+    {
+        "question": "How do I report human rights violations?",
+        "answer": "You can file a complaint with human rights organizations, the national human rights commission, or the police."
+    },
+    {
+        "question": "What should I do if I am being harassed by debt collectors?",
+        "answer": "Know your rights, ask for written proof of the debt, and report any abusive behavior to consumer protection agencies."
+    },
+    {
+        "question": "How do I report a data breach or personal information leak?",
+        "answer": "Notify the affected service provider, change your passwords, and report the breach to cybercrime authorities."
+    },
+    {
+        "question": "What should I do if I am scammed in an online dating fraud?",
+        "answer": "Stop communicating with the scammer, report the profile to the platform, and file a complaint with cybercrime authorities."
+    },
+    {
+        "question": "How do I report illegal logging or deforestation?",
+        "answer": "Report it to the forest department or environmental protection agencies with location details and photos if possible."
+    },
+    {
+        "question": "What should I do if I am being followed by a stranger?",
+        "answer": "Stay in a public place, call a trusted friend or the police, and avoid leading the follower to your home."
+    },
+    {
+        "question": "How do I report a company engaging in illegal labor practices?",
+        "answer": "Report it to the labor department, human rights organizations, or a workers’ union."
+    },
+    {
+        "question": "What should I do if I suspect someone of money laundering?",
+        "answer": "Report it to financial regulatory authorities or the police with any suspicious transaction details."
+    },
+    {
+        "question": "How do I report illegal street racing?",
+        "answer": "Call the police and provide details like location, time, and vehicle descriptions."
+    },
+
+
+
+    {
+        "question": "What should I do if I suspect my neighbor is running an illegal business?",
+        "answer": "Gather any observable details and report the activity to local law enforcement or regulatory authorities."
+    },
+    {
+        "question": "How do I report someone using a fake identity?",
+        "answer": "Report the incident to the police or cybercrime unit with any evidence you have, such as fraudulent documents or online profiles."
+    },
+    {
+        "question": "What should I do if I find abandoned explosives or weapons?",
+        "answer": "Do not touch the items. Move to a safe distance and immediately call the police or bomb disposal unit."
+    },
+    {
+        "question": "How do I report a forged signature or fraudulent document?",
+        "answer": "Report the forgery to law enforcement and provide copies of the suspected fraudulent documents for investigation."
+    },
+    {
+        "question": "What should I do if I find a skimming device on an ATM?",
+        "answer": "Avoid using the ATM, report it to the bank immediately, and inform the police."
+    },
+    {
+        "question": "How do I report someone violating a restraining order?",
+        "answer": "Contact law enforcement immediately and provide evidence of the violation."
+    },
+    {
+        "question": "What should I do if I receive an illegal solicitation message?",
+        "answer": "Report the message to the police or relevant authorities and do not respond to the sender."
+    },
+    {
+        "question": "How do I report a fake job recruitment scam?",
+        "answer": "Report the fraudulent job listing to the police, consumer protection agencies, or job portals."
+    },
+    {
+        "question": "What should I do if I find my personal information being misused online?",
+        "answer": "Report the issue to the website administrator, change your passwords, and notify cybercrime authorities."
+    },
+    {
+        "question": "How do I report price gouging during a crisis?",
+        "answer": "Report price hikes to consumer protection authorities or your local government office."
+    },
+    {
+        "question": "What should I do if I am tricked into signing a fraudulent contract?",
+        "answer": "Seek legal advice immediately and report the fraudulent activity to consumer protection agencies or law enforcement."
+    },
+    {
+        "question": "How do I report misuse of government funds?",
+        "answer": "Contact the anti-corruption bureau or government watchdog organizations with relevant details."
+    },
+    {
+        "question": "What should I do if I receive counterfeit medicine?",
+        "answer": "Report the pharmacy or supplier to health authorities and do not consume the medication."
+    },
+    {
+        "question": "How do I report a missing package from a delivery service?",
+        "answer": "Contact the delivery company and file a complaint. If fraud is suspected, report it to the police or consumer rights organization."
+    },
+    {
+        "question": "What should I do if I suspect animal cruelty?",
+        "answer": "Report the abuse to an animal protection agency or law enforcement with evidence such as photos or videos."
+    },
+    {
+        "question": "How do I report an internet scam involving cryptocurrency?",
+        "answer": "Report the fraud to the police, the cybercrime department, or financial regulatory agencies."
+    },
+    {
+        "question": "What should I do if I am falsely accused of harassment?",
+        "answer": "Remain calm, collect evidence to prove your innocence, and seek legal representation."
+    },
+    {
+        "question": "How do I report a case of credit card fraud?",
+        "answer": "Contact your bank immediately, block your card, and file a complaint with law enforcement."
+    },
+    {
+        "question": "What should I do if I see illegal street vendors selling restricted items?",
+        "answer": "Report the vendors to the local municipal authority or law enforcement."
+    },
+    {
+        "question": "How do I report a stolen or lost official document?",
+        "answer": "File a police report and apply for a replacement with the issuing authority."
+    },
+    {
+        "question": "What should I do if I witness voter fraud?",
+        "answer": "Report the incident to the election commission or relevant authorities with any evidence you can provide."
+    },
+    {
+        "question": "How do I report a case of bribery in my workplace?",
+        "answer": "Report the case to your company’s ethics department or the anti-corruption authority."
+    },
+    {
+        "question": "What should I do if my intellectual property is being used without my permission?",
+        "answer": "Gather evidence and file a complaint with the intellectual property rights authority or law enforcement."
+    },
+    {
+        "question": "How do I report a violation of quarantine or health safety rules?",
+        "answer": "Notify health authorities or law enforcement if you witness non-compliance with public safety regulations."
+    },
+    {
+        "question": "What should I do if someone is spreading false information online?",
+        "answer": "Report the content to the platform administrators and, if necessary, notify cybercrime authorities."
+    },
+    {
+        "question": "How do I report a smuggling operation?",
+        "answer": "Report the details to customs authorities or law enforcement agencies."
+    },
+    {
+        "question": "What should I do if I am a victim of pyramid schemes or Ponzi scams?",
+        "answer": "Report the scam to the financial fraud department and warn others about the scheme."
+    },
+    {
+        "question": "How do I report human trafficking at my workplace?",
+        "answer": "Contact law enforcement or a human trafficking hotline and provide any details you have."
+    },
+    {
+        "question": "What should I do if my email is hacked?",
+        "answer": "Change your password immediately, enable two-factor authentication, and report the breach to your email provider."
+    },
+    {
+        "question": "How do I report hacking attempts on my company’s network?",
+        "answer": "Notify your IT security team and report the attack to cybercrime authorities."
+    },
+    {
+        "question": "What should I do if I witness police misconduct?",
+        "answer": "Report the misconduct to the police complaints authority or human rights commission."
+    },
+    {
+        "question": "How do I report fake news or misleading information on social media?",
+        "answer": "Use the platform’s reporting feature and, if necessary, inform the cybercrime department."
+    },
+    {
+        "question": "What should I do if I suspect my landlord is illegally evicting tenants?",
+        "answer": "Check local tenancy laws, gather evidence, and report the case to housing authorities or legal aid organizations."
+    },
+    {
+        "question": "How do I report an unauthorized drone flying in a restricted area?",
+        "answer": "Notify the aviation authority or local law enforcement."
+    },
+    {
+        "question": "What should I do if I find a fake social media profile impersonating me?",
+        "answer": "Report the account to the platform and provide proof of your identity."
+    },
+    {
+        "question": "How do I report a charity scam asking for fake donations?",
+        "answer": "Report the scam to consumer protection agencies and warn others about fraudulent solicitations."
+    },
+    {
+        "question": "What should I do if I am scammed while making an online investment?",
+        "answer": "Report the fraud to financial regulators, block the scammer, and file a complaint with law enforcement."
+    }
+]

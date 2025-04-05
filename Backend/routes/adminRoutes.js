@@ -17,7 +17,7 @@ router.post("/add-police", addPolice);
 router.get("/police-list", getPoliceList);
 
 // ✅ Remove a police account
-router.delete("/remove-police/:id", removePolice);
+router.delete("/remove/:id", removePolice);
 
 // adminRoutes.js
 
@@ -134,5 +134,9 @@ router.get("/download-report/:reportId", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+
+
 export default router;
 

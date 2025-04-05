@@ -31,24 +31,24 @@ const FinalReportForm = ({ complaintId, officerId, complaintData, onClose, onSub
     };
 
     // Check if there's an existing report for this complaint
-    const fetchExistingReport = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/police/final-report/${complaintId}`);
-        if (response.data) {
-          setExistingReport(response.data);
-          // Pre-fill form if in edit mode and no data already entered
-          if (!report) setReport(response.data.report_text);
-          if (status === "Resolved") setStatus(response.data.final_status);
-          if (!remarks) setRemarks(response.data.remarks || "");
-        }
-      } catch (error) {
-        // It's okay if there's no existing report
-        console.log("No existing report found");
-      }
-    };
+    // const fetchExistingReport = async () => {
+    //   try {
+    //     const response = await axios.get(`http://localhost:5000/api/police/final-report/${complaintId}`);
+    //     if (response.data) {
+    //       setExistingReport(response.data);
+    //       // Pre-fill form if in edit mode and no data already entered
+    //       if (!report) setReport(response.data.report_text);
+    //       if (status === "Resolved") setStatus(response.data.final_status);
+    //       if (!remarks) setRemarks(response.data.remarks || "");
+    //     }
+    //   } catch (error) {
+    //     // It's okay if there's no existing report
+    //     console.log("No existing report found");
+    //   }
+    // };
 
-    fetchOfficerData();
-    fetchExistingReport();
+    // //fetchOfficerData();
+    // fetchExistingReport();
   }, [complaintId, officerId, report, remarks, status]);
 
   const handleFileChange = (e) => {

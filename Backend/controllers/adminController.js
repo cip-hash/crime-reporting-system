@@ -73,13 +73,13 @@ export const removePolice = async (req, res) => {
         }
 
         // ✅ Ensure the police exists before deleting
-        const policeExists = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+        const policeExists = await pool.query("SELECT * FROM police WHERE id = $1", [id]);
         if (policeExists.rows.length === 0) {
             return res.status(404).json({ error: "Police account not found" });
         }
 
         // ✅ Delete police from users table
-        await pool.query("DELETE FROM users WHERE id = $1", [id]);
+        await pool.query("DELETE FROM police WHERE id = $1", [id]);
 
         res.json({ message: "Police account removed successfully" });
 

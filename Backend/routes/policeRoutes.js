@@ -557,4 +557,51 @@ router.post("/find_suspects", (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+
+//sos
+
+router.get("/sos", async (req, res) => {
+  const { subdivision } = req.query;
+  console.log("subdivision:",subdivision);
+  if (!subdivision) {
+      return res.status(400).json({ message: "❌ Subdivision is required" });
+  }
+
+  try {
+      const query = `
+          SELECT u.name,s.id, s.user_email, s.status, s.locations, s.created_at
+          FROM sos_alerts as s join users as u on u.email=s.user_email
+          WHERE police_subdivision = $1
+          ORDER BY created_at DESC;
+      `;
+      
+      const { rows } = await pool.query(query, [subdivision]);
+      console.log(rows);
+      return res.json(rows);
+  } catch (error) {
+      console.error("🔥 Error fetching SOS alerts:", error);
+      res.status(500).json({ message: "🔥 Internal Server Error" });
+  }
+});
+
+
+
+router.get('/officer/:id', async (req, res) => {
+  const officerId = req.params.id;
+  try {
+    const result = await pool.query('SELECT id, name FROM police WHERE id = $1', [officerId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Officer not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching officer:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 export default router;
