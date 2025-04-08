@@ -428,4 +428,55 @@ router.put("/sos/:sosId/stop", async (req, res) => {
 });
 
 
+
+//user reports
+router.get("/final-reports/:user_email", async (req, res) => {
+    try {
+        const { user_email } = req.params; 
+      
+        const query1=`
+        SELECT fr.report_id, fr.complaint_id,
+               c.title AS complaint_title,
+               p.name AS officer_name,
+               fr.final_status, fr.remarks,
+               fr.report_text, fr.created_at,
+               fr.evidence_files
+        FROM final_reports fr
+        JOIN (SELECT * FROM complaints where complainant_email=$1) c ON fr.complaint_id = c.complaint_id
+
+        JOIN police p ON fr.officer_id = p.id
+        
+        ORDER BY fr.created_at DESC;`
+      const result = await pool.query(query1,[user_email]);
+      
+  
+      const reports = result.rows.map(report => {
+        let evidenceFiles = [];
+  
+        try {
+          evidenceFiles = typeof report.evidence_files === "string"
+            ? JSON.parse(report.evidence_files)
+            : Array.isArray(report.evidence_files)
+              ? report.evidence_files
+              : [];
+        } catch (e) {
+          console.error("Invalid evidence_files JSON:", report.evidence_files);
+          evidenceFiles = [];
+        }
+  
+        return {
+          ...report,
+          evidence_files: evidenceFiles,
+        };
+      });
+  
+      res.json(reports);
+    } catch (error) {
+      console.error("Error fetching final reports:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+  
+
+
 export default router;

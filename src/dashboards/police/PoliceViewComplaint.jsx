@@ -31,8 +31,8 @@ const PoliceViewComplaint = () => {
   const [currentComplaintForReport, setCurrentComplaintForReport] = useState(null);
 
   // Add these state variables with your other useState declarations
-const [finalReports, setFinalReports] = useState({});
-const [loadingReports, setLoadingReports] = useState({});
+  const [finalReports, setFinalReports] = useState({});
+  const [loadingReports, setLoadingReports] = useState({});
 
   const navigate = useNavigate();
 
@@ -270,14 +270,20 @@ const [loadingReports, setLoadingReports] = useState({});
     await handleStatusUpdate(complaintId, "Under Investigation");
   };
   
-  // New function to handle opening the final report form
+  // New function to handle opening the final report form with added debugging
   const handleOpenFinalReportForm = (complaint) => {
+    console.log("Opening final report form for complaint:", complaint);
     setCurrentComplaintForReport(complaint);
     setShowFinalReportForm(true);
+    console.log("Form state after setting:", {
+      showFinalReportForm: true,
+      currentComplaint: complaint
+    });
   };
   
   // Function to handle form close
   const handleCloseFinalReportForm = () => {
+    console.log("Closing final report form");
     setShowFinalReportForm(false);
     setCurrentComplaintForReport(null);
   };
@@ -486,127 +492,6 @@ const [loadingReports, setLoadingReports] = useState({});
 
     // Merge data from complaint and complaintDetails to ensure we have all the information
     const mergedData = { ...complaint, ...complaintDetails };
-    /*const fetchFinalReport = async (complaintId) => {
-      // Set loading state for this specific complaint
-      setLoadingReports(prev => ({...prev, [complaintId]: true}));
-      
-      try {
-        const response = await axios.get(`http://localhost:5000/api/police/final-report/${complaintId}`);
-        
-        if (response.data) {
-          setFinalReports(prev => ({...prev, [complaintId]: response.data}));
-        }
-      } catch (error) {
-        console.error("Error fetching final report:", error);
-        alert("Failed to fetch the final report. Please try again.");
-      } finally {
-        setLoadingReports(prev => ({...prev, [complaintId]: false}));
-      }
-    }; */
-    
-    // Add this function to generate and download the PDF
-    const downloadFinalReport = async (complaintId) => {
-      try {
-        // Always fetch fresh data when downloading
-        setLoadingReports(prev => ({...prev, [complaintId]: true}));
-        
-        const response = await axios.get(`http://localhost:5000/api/police/final-report/${complaintId}`);
-        
-        if (!response.data) {
-          alert("Report data not available. Please try again.");
-          setLoadingReports(prev => ({...prev, [complaintId]: false}));
-          return;
-        }
-        
-        // Store the fetched report
-        const reportData = response.data;
-        setFinalReports(prev => ({...prev, [complaintId]: reportData}));
-        
-        // Continue with PDF generation...
-        const reportDiv = document.createElement('div');
-        const complaint = complaints.find(c => c.complaint_id === complaintId);
-        
-        // Debug
-        console.log("Report data for PDF:", reportData);
-        console.log("Complaint data:", complaint);
-        
-        // Make sure all required fields have fallback values to prevent "undefined" in the PDF
-        reportDiv.innerHTML = `
-          <div style="padding: 20px; font-family: Arial, sans-serif;">
-            <h2 style="text-align: center; margin-bottom: 20px;">POLICE FINAL REPORT</h2>
-            
-            <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-              <p><strong>Complaint ID:</strong> ${complaintId}</p>
-              <p><strong>Officer ID:</strong> ${reportData.officer_id || 'N/A'}</p>
-              <p><strong>Incident Type:</strong> ${complaint?.incident_type || 'N/A'}</p>
-              <p><strong>Date Filed:</strong> ${complaint?.date ? new Date(complaint.date).toLocaleDateString() : 'N/A'}</p>
-              <p><strong>Final Status:</strong> ${reportData.final_status || 'N/A'}</p>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-              <h3 style="margin-bottom: 10px;">Final Report</h3>
-              <p style="white-space: pre-wrap;">${reportData.report || 'No report content available'}</p>
-            </div>
-            
-            ${reportData.remarks ? `
-              <div style="margin-bottom: 20px;">
-                <h3 style="margin-bottom: 10px;">Remarks</h3>
-                <p style="white-space: pre-wrap;">${reportData.remarks}</p>
-              </div>
-            ` : ''}
-            
-            <div style="margin-top: 40px;">
-              <p style="text-align: right;">Date: ${reportData.created_at ? new Date(reportData.created_at).toLocaleDateString() : new Date().toLocaleDateString()}</p>
-              <p style="text-align: right; margin-top: 30px;">_______________________</p>
-              <p style="text-align: right;">Officer Signature</p>
-            </div>
-          </div>
-        `;
-        
-        document.body.appendChild(reportDiv);
-        
-        // Generate PDF from the temporary div
-        const canvas = await html2canvas(reportDiv, {
-          scale: 2,
-          useCORS: true,
-          logging: false
-        });
-        
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210; // A4 width in mm (210mm)
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        pdf.save(`Final_Report_${complaintId}.pdf`);
-        
-        // Remove the temporary div
-        document.body.removeChild(reportDiv);
-        
-      }  catch (error) {
-        console.error("Error in downloadFinalReport:", error);
-        if (error.response) {
-          console.error("Response data:", error.response.data);
-          console.error("Response status:", error.response.status);
-          alert(`Failed to generate PDF: ${error.response.data.error || error.message}`);
-        } else {
-          alert(`Failed to generate PDF: ${error.message}`);
-        }
-      } finally {
-        setLoadingReports(prev => ({...prev, [complaintId]: false}));
-      }
-    };
-    
-    //Add a new function to check if the status indicates a final report exists
-    const hasFinalReport = (status) => {
-      return status.startsWith("Closed(") || status === "Closed";
-    };
-    
-    //Modify the renderClosedComplaintActions function to include download option
-   
-  
-   // Rest of your component remains the same
-  
 
     return (
       <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
@@ -710,7 +595,7 @@ const [loadingReports, setLoadingReports] = useState({});
       </div>
     );
   };
-  //ADDING CODE
+
   const fetchFinalReport = async (complaintId) => {
     setLoadingReports(prev => ({...prev, [complaintId]: true}));
     
@@ -814,169 +699,197 @@ const [loadingReports, setLoadingReports] = useState({});
       alert("Failed to generate PDF. Please try again.");
     }
   };  
-//OUTSIDE DETAILED
 
   // Add this function to check if the status indicates a final report exists
-const hasFinalReport = (status) => {
-  return status.startsWith("Closed(") || status === "Closed";
-};
+  // Add this function to check if the status indicates a final report exists
+  const hasFinalReport = (status) => {
+    return status.startsWith("Closed(") || status === "Closed";
+  };
 
-  const renderClosedComplaintActions = (complaint) => {
-    if (complaint.status === "Closed") {
+  // Add this function to render the final report button or view report based on status
+  const renderFinalReportActions = (complaint) => {
+    const hasReport = hasFinalReport(complaint.status);
+    
+    if (hasReport) {
       return (
-        <button
-          // onClick={() => handleOpenFinalReportForm(complaint)}
-          className="w-full mt-2 p-2 bg-green-600 text-white rounded-lg hover:bg-green-800"
-        >
-          {/* Fill Final Form */}
-        </button>
+        <div className="mt-2">
+          <button
+            onClick={() => downloadFinalReport(complaint.complaint_id)}
+            className="w-full py-1 px-2 bg-green-600 text-white rounded-lg hover:bg-green-800 flex items-center justify-center gap-1"
+            disabled={loadingReports[complaint.complaint_id]}
+          >
+            {loadingReports[complaint.complaint_id] ? (
+              "Loading Report..."
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m-9 3a9 9 0 1 0 18 0 9 9 0 0 0-18 0z" />
+                </svg>
+                View Final Report
+              </>
+            )}
+          </button>
+        </div>
       );
-    } else if (hasFinalReport(complaint.status)) {
+    } else if (complaint.status === "Under Investigation") {
       return (
-        <button
-          onClick={() => downloadFinalReport(complaint.complaint_id)}
-          className="w-full mt-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 flex items-center justify-center"
-          disabled={loadingReports[complaint.complaint_id]}
-        >
-          {loadingReports[complaint.complaint_id] ? 
-            "Loading..." : 
-             <><span className="mr-1">⬇️</span> Download Final Report</>
-          }
-        </button>
+        <div className="mt-2">
+          <button
+            onClick={() => handleOpenFinalReportForm(complaint)}
+            className="w-full py-1 px-2 bg-purple-600 text-white rounded-lg hover:bg-purple-800"
+          >
+            Fill Final Report
+          </button>
+        </div>
       );
     }
+    
     return null;
   };
-  
-  const handleGetSuspects = async () => {
-    const payload = {
-      crime_type: crimeTypeInput,
-      identifying_mark: markInput,
-      complexion: complexionInput,
-      last_known_address: addressInput,
-    };
-  
-    try {
-      const response = await axios.post("http://localhost:5000/api/police/find_suspects", payload);
-      const suspects = response.data.data;
-      if (suspects.length > 0) {
-        // Display suspects
-      } else {
-        alert("No matching suspects found.");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      alert("Something went wrong while fetching suspects.");
+
+  // Render function for complaints list
+  const renderComplaints = () => {
+    if (loading) {
+      return <p className="text-center py-4">Loading complaints...</p>;
     }
+
+    if (error) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-red-600">{error}</p>
+          <button
+            className="mt-2 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-800"
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              fetchComplaints();
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      );
+    }
+
+    if (complaints.length === 0) {
+      return (
+        <p className="text-center py-4">
+          No complaints found for your district and subdivision.
+        </p>
+      );
+    }
+
+    return (
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {complaints.map((complaint) => (
+          <div
+            key={complaint.complaint_id}
+            className={`bg-white p-4 rounded-lg shadow-md border ${
+              selectedComplaintId === complaint.complaint_id
+                ? "border-blue-500"
+                : "border-gray-200"
+            }`}
+            onClick={() =>
+              setSelectedComplaintId((prev) =>
+                prev === complaint.complaint_id ? null : complaint.complaint_id
+              )
+            }
+          >
+            <h3 className="font-bold mb-2 text-lg">
+              {complaint.title || complaint.incident_type || "Complaint"}
+            </h3>
+            <p className="mb-1"><b>ID:</b> {complaint.complaint_id}</p>
+            <p className="mb-1"><b>Type:</b> {complaint.incident_type}</p>
+            <p className="mb-1"><b>Date:</b> {new Date(complaint.date).toLocaleDateString()}</p>
+            <p className="mb-1"><b>Location:</b> {complaint.exact_address || "Not specified"}</p>
+            <p className="mb-1">
+              <b>Status:</b>{" "}
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${
+                  complaint.status === "Pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : complaint.status === "Accepted"
+                    ? "bg-blue-100 text-blue-800"
+                    : complaint.status === "Rejected"
+                    ? "bg-red-100 text-red-800"
+                    : complaint.status === "Under Investigation"
+                    ? "bg-purple-100 text-purple-800"
+                    : complaint.status.startsWith("Closed")
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {complaint.status}
+              </span>
+            </p>
+            
+            {selectedComplaintId === complaint.complaint_id && (
+              <div className="mt-3 border-t pt-3">
+                <div className="mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Update Status:
+                  </label>
+                  <div className="flex space-x-2">
+                    {getNextStatusOptions(complaint.status).map((option) => (
+                      <button
+                        key={option}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStatusUpdate(complaint.complaint_id, option);
+                        }}
+                        className={`py-1 px-2 rounded-lg text-sm ${
+                          option === "Accepted" || option === "Under Investigation"
+                            ? "bg-blue-600 text-white hover:bg-blue-800"
+                            : option === "Closed"
+                            ? "bg-green-600 text-white hover:bg-green-800"
+                            : "bg-red-600 text-white hover:bg-red-800"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                {renderFinalReportActions(complaint)}
+                
+                {renderDetailedInvestigation(complaint)}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
   };
 
-  // Modified renderClosedComplaintActions
-  
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold text-center mb-4">Police Complaint Dashboard</h1>
-      {/* Officer ID debug - helps with troubleshooting */}
-      <div className="text-xs text-gray-500 text-center mb-4">
-        {policeOfficerId ? `Logged in as Officer #${policeOfficerId}` : "Officer ID not found - Some features may be limited"}
+    <div className="container mx-auto p-4" ref={complaintRef}>
+      <h1 className="text-2xl font-bold mb-4">Police Complaint Dashboard</h1>
+      <div className="mb-4">
+        <p className="font-bold">
+          <span className="text-blue-800">District:</span> {policeDistrict} | 
+          <span className="text-blue-800"> Subdivision:</span> {policeSubdivision}
+        </p>
       </div>
       
-      {/* Final Report Form Modal */}
+      {renderComplaints()}
+      
+      {/* Final report form modal */}
       {showFinalReportForm && currentComplaintForReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4">Final Report for Complaint #{currentComplaintForReport.complaint_id}</h2>
             <FinalReportForm 
               complaintId={currentComplaintForReport.complaint_id}
-              officerId={policeOfficerId}
-              complaintData={currentComplaintForReport}
+              complaintTitle={currentComplaintForReport.title || currentComplaintForReport.incident_type}
               onClose={handleCloseFinalReportForm}
               onSubmitSuccess={handleFinalReportSubmitted}
             />
           </div>
         </div>
       )}
-      
-      {loading ? (
-        <p className="text-center">Loading complaints...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : complaints.length === 0 ? (
-        <p className="text-center text-gray-500">No complaints found.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {complaints.map((c) => (
-            <div
-              key={c.complaint_id}
-              className={`p-4 border rounded-lg transition cursor-pointer ${
-                selectedComplaintId === c.complaint_id ? "bg-blue-100 border-blue-500" : "bg-gray-100"
-              }`}
-              onClick={() => setSelectedComplaintId(c.complaint_id)}
-            >
-              <h4 className="font-semibold">ID: {c.complaint_id}</h4>
-              <p>Type: {c.incident_type}</p>
-              <p className={`font-medium ${
-                c.status === "Under Investigation" ? "text-blue-600" : 
-                c.status === "Closed" ? "text-green-600" : 
-                c.status === "Rejected" ? "text-red-600" : "text-gray-600"
-              }`}>
-                Status: {c.status}
-              </p>
-              
-              {selectedComplaintId === c.complaint_id && (
-                <div ref={complaintRef} className="mt-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                  {/* Always show basic information */}
-                  <p><b>Date:</b> {new Date(c.date).toLocaleDateString()}</p>
-                  <p><b>Time:</b> {c.time}</p>
-                  <p><b>District:</b> {c.district}</p>
-                  <p><b>Subdivision:</b> {c.subdivision}</p>
-                  <p><b>Description:</b> {c.description}</p>
-                  
-                  {/* Render investigation details if status is "Under Investigation" */}
-                  {renderDetailedInvestigation(c)}
-  
-                  <div className="mt-4">
-                    <p><b>Current Status:</b> {c.status}</p>
-                    
-                    {c.status === "Accepted" && (
-                      <button
-                        className="w-full mt-2 p-2 bg-green-600 text-white rounded-lg hover:bg-green-800"
-                        onClick={() => handleStartInvestigation(c.complaint_id)}
-                      >
-                        Start Investigation
-                      </button>
-                    )}
-  
-                    {getNextStatusOptions(c.status).length > 0 && (
-                      <>
-                        <label className="block mt-2 font-medium">Update Status:</label>
-                        <select
-                          className="w-full p-2 border rounded-lg mt-1"
-                          value={status[c.complaint_id] || ""}
-                          onChange={(e) => setStatus((prev) => ({ ...prev, [c.complaint_id]: e.target.value }))}
-                        >
-                          <option value="">Select Status</option>
-                          {getNextStatusOptions(c.status).map((option, idx) => (
-                            <option key={idx} value={option}>{option}</option>
-                          ))}
-                        </select>
-                        <button
-                          className="w-full mt-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800"
-                          onClick={() => handleStatusUpdate(c.complaint_id, status[c.complaint_id])}
-                        >
-                          Update Status
-                        </button>
-                      </>
-                    )}
-                    
-                    {/* Show Fill Final Form button for Closed status */}
-                    {renderClosedComplaintActions(c)}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
-}
-  export default PoliceViewComplaint;
+};
+
+export default PoliceViewComplaint;

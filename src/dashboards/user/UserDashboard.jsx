@@ -6,6 +6,7 @@ import TrackStatus from "./TrackStatus";
 import MyReports from "./MyReports";
 import Chatbot from "./Chatbot";
 import Sos from "./Sos";
+import Reports from "./Reports";
 
 
 const UserDashboard = () => {
@@ -70,6 +71,20 @@ const UserDashboard = () => {
             <FileText size={18} className={`mr-3 ${activeTab === "sos" ? "text-blue-300" : ""}`} /> 
             <span className="font-medium">SOS</span>
           </button>
+
+
+          <button
+            className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
+              activeTab === "user-report" 
+                ? "bg-gradient-to-r from-blue-700 to-blue-600 shadow-lg border-l-4 border-blue-400" 
+                : "hover:bg-blue-800/50 text-blue-100"
+            }`}
+            onClick={() => setActiveTab("user-report")}
+          >
+            <FileText size={18} className={`mr-3 ${activeTab === "user-report" ? "text-blue-300" : ""}`} /> 
+            <span className="font-medium">View Complaint report</span>
+          </button>
+
           
           {/* <button
             className={`flex items-center p-3 w-full rounded-lg transition-all duration-200 ${
@@ -143,6 +158,7 @@ const UserDashboard = () => {
     {activeTab === "report" && <ReportCrime />}
     {activeTab === "status" && <TrackStatus />}
     {activeTab === "sos" && <Sos />}
+    {activeTab === "user-report" && <Reports />}
     <Chatbot />  {/* Chatbot Component */}
   </div>
 </main>
