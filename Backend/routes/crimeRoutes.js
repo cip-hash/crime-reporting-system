@@ -432,9 +432,9 @@ router.put("/sos/:sosId/stop", async (req, res) => {
 //user reports
 router.get("/final-reports/:user_email", async (req, res) => {
     try {
-        const { user_email } = req.params; 
-      
-        const query1=`
+      const { user_email } = req.params;
+  
+      const query = `
         SELECT fr.report_id, fr.complaint_id,
                c.title AS complaint_title,
                p.name AS officer_name,
@@ -442,13 +442,13 @@ router.get("/final-reports/:user_email", async (req, res) => {
                fr.report_text, fr.created_at,
                fr.evidence_files
         FROM final_reports fr
-        JOIN (SELECT * FROM complaints where complainant_email=$1) c ON fr.complaint_id = c.complaint_id
-
-        JOIN police p ON fr.officer_id = p.id
-        
-        ORDER BY fr.created_at DESC;`
-      const result = await pool.query(query1,[user_email]);
-      
+        INNER JOIN complaints c ON fr.complaint_id = c.complaint_id
+        INNER JOIN police p ON fr.officer_id = p.id
+        WHERE TRIM(LOWER(c.complainant_email)) = TRIM(LOWER($1))
+        ORDER BY fr.created_at DESC;
+      `;
+  
+      const result = await pool.query(query, [user_email]);
   
       const reports = result.rows.map(report => {
         let evidenceFiles = [];
@@ -477,6 +477,4 @@ router.get("/final-reports/:user_email", async (req, res) => {
     }
   });
   
-
-
 export default router;

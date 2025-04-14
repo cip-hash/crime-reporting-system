@@ -178,6 +178,7 @@ const PoliceViewComplaint = () => {
     try {
       setNotesLoading(true);
       
+      
       const noteData = {
         complaint_id: selectedComplaintId,
         officer_id: officerId,
@@ -801,7 +802,8 @@ const PoliceViewComplaint = () => {
             <p className="mb-1"><b>ID:</b> {complaint.complaint_id}</p>
             <p className="mb-1"><b>Type:</b> {complaint.incident_type}</p>
             <p className="mb-1"><b>Date:</b> {new Date(complaint.date).toLocaleDateString()}</p>
-            <p className="mb-1"><b>Location:</b> {complaint.exact_address || "Not specified"}</p>
+            <p className="mb-1"><b>Description:</b> {complaint.description}</p>
+            {/* <p className="mb-1"><b>Location:</b> {complaint.exact_address || "Not specified"}</p> */}
             <p className="mb-1">
               <b>Status:</b>{" "}
               <span
